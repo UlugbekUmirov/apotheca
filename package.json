@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export ",
     "start": "next start",
     "lint": "next lint"
   },
@@ -12,6 +12,7 @@
     "@emotion/core": "^11.0.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.0.0",
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",

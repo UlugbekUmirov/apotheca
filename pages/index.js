@@ -106,13 +106,73 @@ const StyleElement = styled.div`
     background-color: #f7f8fc;
     border-radius: 50%;
   }
+  & .card-item {
+    min-width: calc(25% - 24px);
+    width: calc(25% - 24px);
+    padding: 16px;
+    position: relative;
+    border-radius: 16px;
+    filter: none;
+    height: 331px;
+    margin: 12px;
+  }
+  & .cards {
+    display: flex;
+    overflow-x: scroll;
+  }
+  & .card-item h5 {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: #6f818f;
+    height: 30px;
+    margin: 10px 0px 0px;
+  }
+  & .card-item h4 {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 150%;
+    color: #23272b;
+    height: 48px;
+    line-height: 150%;
+    margin: 8px 0px;
+  }
+  & .card-item button {
+    background: #e93235;
+    border-radius: 8px;
+    padding: 12px 24px;
+    color: white;
+    border: none;
+    width: 100%;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    position:absolute;
+  }
+  & .cards::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+  @media (max-width: 1100px) {
+    .card-item {
+      min-width: calc(33.3333% - 24px);
+    }
+  }
+  @media (max-width: 800px) {
+    .card-item {
+      min-width: calc(50% - 24px);
+    }
+  }
+  @media (max-width: 500px) {
+    .card-item {
+      min-width: calc(100% - 24px);
+    }
+  }
 `;
 
 export default function Home() {
-  const [options, setOptions] = useState({});
   const [resultImage, setResultImage] = useState("");
-  const [name, setName] = useState("");
-  const [results , setResults] = useState([])
+  const [results, setResults] = useState([]);
   useEffect(() => {
     const data = new FormData();
     axios()
@@ -120,21 +180,20 @@ export default function Home() {
       .then((response) => {
         const data = response?.data?.results;
         const results = Array.isArray(data) ? data : [];
-        setResults(results)
-        /* const iterator = data.values();
-         for(const value of iterator){
-          const results  = value;
-            results.Image.map((e)=>{
-                const resultImage =  e.image;
-                console.log(resultImage)
-                 setResultImage(resultImage);
-               const  name  =  results.Manufacturer.name;
-               setName(name);
-           })
-      } */
+        setResults(results);
+        const iterator = data.values();
+        for (const value of iterator) {
+          const results = value;
+          results.Image.map((e) => {
+            const resultImage = e.image;
+            console.log(resultImage);
+            setResultImage(resultImage);
+          });
+        }
       })
       .catch(() => console.log("err"));
   }, []);
+
   return (
     <div>
       <Head>
@@ -235,14 +294,35 @@ export default function Home() {
             </div>
             <div>
               <h2>Maxsus takliflar</h2>
-              <ul>
-                <li>
-                  {results.map(({Manufacturer}) => {
-                   <p>{Manufacturer.name}</p>
-                   console.log(Manufacturer.name);
-                  })}
-                </li>
-              </ul>
+              <div className="cards ">
+                {results.map(({ name, Country_of_origin }) => {
+                  // console.log(
+                  //   <Image src={resultImage} width={130} height={130} />
+                  // );
+                  return (
+                    <div className="card-item ">
+                      <Image
+                        src={""}
+                        width={130}
+                        height={130}
+                        onError={(e) => {
+                          e.target.src =
+                            "https://www.svgindianmarket.com/images/thumbs/default-image_510.png"; // some replacement image
+                        }}
+                      />
+                      <div >
+                      <h5>{Country_of_origin.name}</h5>
+                      <h4>{ name.length<=45 ? name : name.slice(0, 47)+'...'}</h4>
+                      <button className="btn">
+                        <Image src="/Bag.svg" width={13} height={13} />
+                        Savatga qo'shish
+                      </button>
+                      <i className="fa fa-heart"></i>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </main>
