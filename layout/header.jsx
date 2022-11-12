@@ -4,6 +4,8 @@ import Select from "react-select";
 import { useEffect, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import Modal from "react-bootstrap/Modal";
+import InputMask from "react-input-mask";
 const Navbar = styled.div`
 & nav {
   padding: 24px 0px;
@@ -108,6 +110,20 @@ const Navbar = styled.div`
 & Navbar{
   transition: all 0.5s ease-in-out 0s;
 }
+&.sticky-content{
+  animatsion : navbarbottom 0.5s ease;
+}
+& .modal-header{
+  border-bottom:none!important;
+}
+@keyframes navbarbottom {
+  from {
+    top: 100%;
+  }
+  to {
+    top: 0%;
+  }
+}
  @media (max-width: 768px){
    .nav-right a{
       display:none;
@@ -186,7 +202,13 @@ const Header = () => {
     isDisabled: true,
   });
   const [scroll, setScroll] = useState(false);
-  
+  const [show, setShow] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [fio, setFio] = useState("");
+  const [step, setStep] = useState(0);
+  const [networkError, setNetworkError] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   useEffect(() => {
     let position = window.pageYOffset;
     window.addEventListener("scroll", () => {
@@ -200,111 +222,50 @@ const Header = () => {
     });
   }, []);
 
+  const SendSMS = async (e) => {
+    e.preventDefault();
+    const data = new FormData();
+    data.append("phone", phone);
+    data.append("fio", fio);
+
+    axios()
+      .post("/call/?lan=uz", data)
+      .then((response) => {
+        const status = response?.data?.status;
+        console.log(status);
+        if (status === 1) {
+          setStep(1);
+          setFio("");
+          setPhone("");
+        } else {
+          setNetworkError(true);
+        }
+      })
+      .catch(() => setNetworkError(true));
+
+    await axios().get(
+      encodeURI(
+        `https://api.telegram.org/bot5702349594:AAHkwZZFWMAgffq76pmtE1VaFuxJnf7nv4w/sendMessage?chat_id=${-1001818127319}&text=📮Text:${description}\n<b>👤Ismi:</b> ${fio}\n<b>📞Telefon raqami:</b>+${phone}\n&parse_mode=html`
+      )
+    );
+  };
   return (
-    <div style={{ 
-      "transition":"all 0.5s ease-in-out 0s",
-      
-  }}>
-          {
-          scroll
-           ?  
-           <Navbar  
-           style={{
-            'position':"fixed",
-            "top":"0px" ,
-            'width':"100%" , 
-            'zIndex':"4" ,
-            "transition":"all 0.5s ease-in-out 0s"
-           }}>  
-           <div className="sticky-content"  
-           >
-          <div
-            className="container"
-            style={{
-              display: "flex",
-              justifyContent: "spaceBetween",
-              alignItems: "center",
-            }}
-          >
-              <Image src='/logo-image.svg'
-               style={{
-              'marginRight':"24px", 
-              "transitionTimingFunction": 'easeInOut'
-              }} 
-               width={55}
-                height={52}
-               />
-            <DropdownButton
-              className="dropdownbutton"
-              id="button"
-              title={`Maxsulotlar katalogi`}
-            >
-              <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-            </DropdownButton>
-            <form>
-              <input
-                type="text"
-                placeholder="Dori nomini kiriting..."
-                className="search-input"
-              />
-              <button className="search-btn">
-                <Image src="/Search.svg" width={20} height={20} />
-              </button>
-            </form>
-            <Image
-              className="search-btn__after"
-              src="/Search.svg"
-              width={20}
-              height={20}
-            />
-            <div className="bag-icons">
-              <Image
-                className="image"
-                src="/Heart.svg"
-                width={20}
-                height={20}
-              />
-            </div>
-            <span className="bag-title">Sevimlilar</span>
-            <div className="bag-icons">
-              <Image src="/Bag.svg" width={20} height={20} />
-            </div>
-            <span className="bag-title">Savat</span>
-          </div>
-           </div>
-           </Navbar>
-         :
-         <Navbar style={{ 
-             "transition":"all 0.5s ease-in-out 0s",
-         }}>
-           <div >
-          <nav className="container" >
-            <Image
-              style={{ alignItems: "center", display: "flex" }}
-              src="/logo.svg"
-              width={177}
-              height={52.2}
-            />
-            <div className="nav-right">
-              <a href="tel:+998998715668">+998 99 871 56 68</a>
-              <Image
-                className="calling"
-                src="/Calling.svg"
-                width={24}
-                height={24}
-              />
-              <button>Qayta bog'lanish</button>
-              <Select
-                defaultValue={selectedOption}
-                onChange={setSelectedOption}
-                options={options}
-                {...defaultOptions}
-              />
-            </div>
-          </nav>
-          <div className="sticky-content" >
+    <div
+      style={{
+        transition: "all 0.5s ease-in-out 0s",
+      }}
+    >
+      {scroll ? (
+        <Navbar
+          style={{
+            position: "fixed",
+            top: "0px",
+            width: "100%",
+            zIndex: "4",
+            transition: "all 0.5s ease-in-out 0s",
+          }}
+        >
+          <div className="sticky-content">
             <div
               className="container"
               style={{
@@ -313,13 +274,23 @@ const Header = () => {
                 alignItems: "center",
               }}
             >
-            
+              <Image
+                src="/logo-image.svg"
+                style={{
+                  marginRight: "24px",
+                  transitionTimingFunction: "easeInOut",
+                }}
+                width={55}
+                height={52}
+              />
               <DropdownButton
                 className="dropdownbutton"
                 id="button"
                 title={`Maxsulotlar katalogi`}
               >
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                <Dropdown.Item layout="responsive" href="#/action-1">
+                  Action
+                </Dropdown.Item>
                 <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
               </DropdownButton>
@@ -353,11 +324,189 @@ const Header = () => {
               </div>
               <span className="bag-title">Savat</span>
             </div>
-          </div> 
-           </div>
-          </Navbar>
-          }           
-     
+          </div>
+        </Navbar>
+      ) : (
+        <Navbar
+          style={{
+            animatsion: "navbarbottom 0.5s ease",
+          }}
+        >
+          <div>
+            <nav className="container">
+              <Image
+                style={{ alignItems: "center", display: "flex" }}
+                src="/logo.svg"
+                width={177}
+                height={52.2}
+              />
+              <div className="nav-right">
+                <a href="tel:+998998715668">+998 99 871 56 68</a>
+                <Image
+                  variant="primary"
+                  onClick={handleShow}
+                  className="calling"
+                  src="/Calling.svg"
+                  width={24}
+                  height={24}
+                  style={{ cursor: "pointer" }}
+                />
+                <button variant="primary" onClick={handleShow}>
+                  Qayta bog'lanish
+                </button>
+                {step === 0 ? (
+                  <>
+                    {" "}
+                    <Modal show={show} onHide={handleClose}>
+                      <Modal.Header closeButton></Modal.Header>
+                      <Modal.Body style={{ textAlign: "center" }}>
+                        <form onSubmit={SendSMS}>
+                          <h3>Qayta bo'g'laish</h3>
+                          <p style={{ color: "#6f818f" }}>
+                            Ism va telefon raqamingizni kiriting
+                          </p>
+                          <div>
+                            <div style={{ color: "#6f818f" }}>Ism</div>
+                            <input
+                              type="text"
+                              onChange={(e) => {
+                                const fio = e.target.value;
+                                setFio(fio);
+                              }}
+                              name="name"
+                              style={{
+                                width: "60%",
+                                margin: "10px 0",
+                                border: "1px solid rgba(20, 54, 80, 0.1)",
+                                background: "rgba(20, 54, 80, 0.1)",
+                                overflow: "hidden",
+                                borderRadius: "8px",
+                                padding: "4px",
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <div style={{ color: "#6f818f" }}>
+                              Telefon raqam
+                            </div>
+                            <InputMask
+                              className="InputMask"
+                              formatChars={{ b: "[0-9]" }}
+                              mask="+998 (bb) bbb-bb-bb"
+                              maskChar=""
+                              style={{
+                                width: "60%",
+                                margin: "10px 0",
+                                border: "1px solid rgba(20, 54, 80, 0.1)",
+                                background: "rgba(20, 54, 80, 0.1)",
+                                overflow: "hidden",
+                                borderRadius: "8px",
+                                padding: "4px",
+                              }}
+                              value={phone}
+                              onChange={(e) => {
+                                const phone = e.target.value
+                                  .replace(/-/g, "")
+                                  .replace(/\(/g, "")
+                                  .replace(/\)/g, "")
+                                  .replace(/\+/g, "")
+                                  .replace(/\s/g, "")
+                                  .replace(/_/g, "");
+                                setPhone(phone);
+                              }}
+                            />
+                          </div>
+                          <input
+                            onClick={SendSMS}
+                            type="submit"
+                            style={{
+                              background: "#061b34",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "8px",
+                              width: "60%",
+                              padding: "5px",
+                              marginBottom: "10px",
+                            }}
+                            value="Yuborish"
+                          />
+                          {networkError && (
+                            <p style={{ color: "red" }}>
+                              Internetga ulanmagan . Iltimos internetingizni
+                              qayta tekshirib kuring
+                            </p>
+                          )}
+                        </form>
+                      </Modal.Body>
+                    </Modal>
+                  </>
+                ) : (
+                  <>dddd</>
+                )}
+                <Select
+                  defaultValue={selectedOption}
+                  onChange={setSelectedOption}
+                  options={options}
+                  {...defaultOptions}
+                />
+              </div>
+            </nav>
+            <div className="sticky-content">
+              <div
+                className="container"
+                style={{
+                  display: "flex",
+                  justifyContent: "spaceBetween",
+                  alignItems: "center",
+                }}
+              >
+                <DropdownButton
+                  className="dropdownbutton"
+                  id="button"
+                  title={`Maxsulotlar katalogi`}
+                >
+                  <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                  <Dropdown.Item href="#/action-2">
+                    Another action
+                  </Dropdown.Item>
+                  <Dropdown.Item href="#/action-3">
+                    Something else
+                  </Dropdown.Item>
+                </DropdownButton>
+                <form>
+                  <input
+                    type="text"
+                    placeholder="Dori nomini kiriting..."
+                    className="search-input"
+                  />
+                  <button className="search-btn">
+                    <Image src="/Search.svg" width={20} height={20} />
+                  </button>
+                </form>
+                <Image
+                  className="search-btn__after"
+                  src="/Search.svg"
+                  width={20}
+                  height={20}
+                />
+                <div className="bag-icons">
+                  <Image
+                    className="image"
+                    src="/Heart.svg"
+                    width={20}
+                    height={20}
+                  />
+                </div>
+                <span className="bag-title">Sevimlilar</span>
+                <div className="bag-icons">
+                  <Image src="/Bag.svg" width={20} height={20} />
+                </div>
+                <span className="bag-title">Savat</span>
+              </div>
+            </div>
+          </div>
+        </Navbar>
+      )}
     </div>
   );
 };

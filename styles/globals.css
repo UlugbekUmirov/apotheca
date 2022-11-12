@@ -13,10 +13,9 @@ a {
 }
 * {
   box-sizing: border-box;
+
 }
 .content {
   min-height: calc(80vh);
-  padding: 1.5rem 0;
- 
 }
   
