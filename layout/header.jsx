@@ -6,6 +6,8 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Modal from "react-bootstrap/Modal";
 import InputMask from "react-input-mask";
+import axios from "../pages/api/axios";
+import Link from "next/link";
 const Navbar = styled.div`
 & nav {
   padding: 24px 0px;
@@ -49,7 +51,9 @@ const Navbar = styled.div`
   background-color: #061B34;
   font-size:15px;
   font-weight:500;
-  padding:10px 24px;
+  padding:10px ;
+  display:flex;
+  align-items:center;
 
 }
 & .dropdown-toggle::before{
@@ -87,7 +91,7 @@ const Navbar = styled.div`
   border-radius:8px;
   transition: all 0.5s ease-in-out 0s;
 }
-& .bag-icons {
+ & .bag-icons  {
  padding:10px;
  background-color:#143650;
  display:flex;
@@ -149,7 +153,11 @@ const Navbar = styled.div`
 @media(max-width:992px){
   .bag-title{
     display:none;
-  }  
+  } 
+  .katalog-title{
+   display:none;
+   margin: 0px 0px -2px;
+  } 
 }
 `;
 const defaultOptions = {
@@ -179,6 +187,9 @@ const defaultOptions = {
       ...styles,
       fontSize: "14px",
       fontWeight: "500",
+      display: "flex",
+      alignItems: "center",
+      cursor: "pointer",
     }),
     multiValue: (styles) => ({
       fontSize: "14px",
@@ -191,13 +202,49 @@ const defaultOptions = {
   },
 };
 const options = [
-  { value: "uz", label: "O'zbek tili" },
-  { value: "ru", label: "Русский" },
+  {
+    value: "uz",
+    label: (
+      <>
+        <img
+          src="https://apotheca.uz/static/images/russian-flag.svg"
+          width={18}
+          height={18}
+          style={{ marginRight: "5px" }}
+        />
+        <span style={{ fontSize: "1px" }}>O'zbek tili</span>
+      </>
+    ),
+  },
+  {
+    value: "ru",
+    label: (
+      <>
+        <img
+          src="https://apotheca.uz/static/images/uzbekistan-flag.svg"
+          width={18}
+          height={18}
+          style={{ marginRight: "5px" }}
+        />
+        <span style={{ fontSize: "12px" }}>Русский</span>
+      </>
+    ),
+  },
 ];
 
 const Header = () => {
   const [selectedOption, setSelectedOption] = useState({
-    label: "O'zbek tili",
+    label: (
+      <>
+        <img
+          src="https://apotheca.uz/static/images/russian-flag.svg"
+          width={18}
+          height={18}
+          style={{ marginRight: "5px" }}
+        />
+        <span style={{ fontSize: "14px" }}>O'zbek tili</span>
+      </>
+    ),
     value: "",
     isDisabled: true,
   });
@@ -221,40 +268,33 @@ const Header = () => {
       position = currentPosition;
     });
   }, []);
-
   const SendSMS = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    data.append("phone", phone);
     data.append("fio", fio);
-
-    axios()
-      .post("/call/?lan=uz", data)
+    data.append("phone", phone);
+    const value = Object.fromEntries(data.entries());
+    await axios()
+      .post("/call/?lan", value)
       .then((response) => {
         const status = response?.data?.status;
-        console.log(status);
         if (status === 1) {
           setStep(1);
-          setFio("");
-          setPhone("");
         } else {
           setNetworkError(true);
         }
       })
       .catch(() => setNetworkError(true));
 
-    await axios().get(
-      encodeURI(
-        `https://api.telegram.org/bot5702349594:AAHkwZZFWMAgffq76pmtE1VaFuxJnf7nv4w/sendMessage?chat_id=${-1001818127319}&text=📮Text:${description}\n<b>👤Ismi:</b> ${fio}\n<b>📞Telefon raqami:</b>+${phone}\n&parse_mode=html`
-      )
-    );
+    // await axios().get(
+    //   encodeURI(
+    //     `https://api.telegram.org/bot5702349594:AAHkwZZFWMAgffq76pmtE1VaFuxJnf7nv4w/sendMessage?chat_id=${-1001818127319}&text=👤Ismi:</b> ${fio}\n<b>📞Telefon raqami:</b>+${phone}\n&parse_mode=html`
+    //   )
+    // );
   };
+
   return (
-    <div
-      style={{
-        transition: "all 0.5s ease-in-out 0s",
-      }}
-    >
+    <div>
       {scroll ? (
         <Navbar
           style={{
@@ -286,7 +326,17 @@ const Header = () => {
               <DropdownButton
                 className="dropdownbutton"
                 id="button"
-                title={`Maxsulotlar katalogi`}
+                title={
+                  <>
+                    <img src="Group 10092.svg" width={20} height={14} />{" "}
+                    <span
+                      style={{ marginLeft: "5px" }}
+                      className="katalog-title"
+                    >
+                      Mahsulotlar katalogi
+                    </span>
+                  </>
+                }
               >
                 <Dropdown.Item layout="responsive" href="#/action-1">
                   Action
@@ -310,19 +360,23 @@ const Header = () => {
                 width={20}
                 height={20}
               />
-              <div className="bag-icons">
-                <Image
-                  className="image"
-                  src="/Heart.svg"
-                  width={20}
-                  height={20}
-                />
+              <div  style={{'display':'flex'}}>
+                <div className="bag-icons">
+                  <Image
+                    className="image"
+                    src="/Heart.svg"
+                    width={20}
+                    height={20}
+                  />
+                </div>
+                <span className="bag-title">Sevimlilar</span>
               </div>
-              <span className="bag-title">Sevimlilar</span>
-              <div className="bag-icons">
-                <Image src="/Bag.svg" width={20} height={20} />
+              <div style={{'display':'flex'}}>
+                <div className="bag-icons">
+                  <Image src="/Bag.svg" width={20} height={20} />
+                </div>
+                <span className="bag-title">Savat</span>
               </div>
-              <span className="bag-title">Savat</span>
             </div>
           </div>
         </Navbar>
@@ -334,12 +388,14 @@ const Header = () => {
         >
           <div>
             <nav className="container">
+            <Link href='/'>
               <Image
                 style={{ alignItems: "center", display: "flex" }}
                 src="/logo.svg"
                 width={177}
                 height={52.2}
               />
+            </Link>
               <div className="nav-right">
                 <a href="tel:+998998715668">+998 99 871 56 68</a>
                 <Image
@@ -355,93 +411,88 @@ const Header = () => {
                   Qayta bog'lanish
                 </button>
                 {step === 0 ? (
-                  <>
-                    {" "}
-                    <Modal show={show} onHide={handleClose}>
-                      <Modal.Header closeButton></Modal.Header>
-                      <Modal.Body style={{ textAlign: "center" }}>
-                        <form onSubmit={SendSMS}>
-                          <h3>Qayta bo'g'laish</h3>
-                          <p style={{ color: "#6f818f" }}>
-                            Ism va telefon raqamingizni kiriting
-                          </p>
-                          <div>
-                            <div style={{ color: "#6f818f" }}>Ism</div>
-                            <input
-                              type="text"
-                              onChange={(e) => {
-                                const fio = e.target.value;
-                                setFio(fio);
-                              }}
-                              name="name"
-                              style={{
-                                width: "60%",
-                                margin: "10px 0",
-                                border: "1px solid rgba(20, 54, 80, 0.1)",
-                                background: "rgba(20, 54, 80, 0.1)",
-                                overflow: "hidden",
-                                borderRadius: "8px",
-                                padding: "4px",
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <div style={{ color: "#6f818f" }}>
-                              Telefon raqam
-                            </div>
-                            <InputMask
-                              className="InputMask"
-                              formatChars={{ b: "[0-9]" }}
-                              mask="+998 (bb) bbb-bb-bb"
-                              maskChar=""
-                              style={{
-                                width: "60%",
-                                margin: "10px 0",
-                                border: "1px solid rgba(20, 54, 80, 0.1)",
-                                background: "rgba(20, 54, 80, 0.1)",
-                                overflow: "hidden",
-                                borderRadius: "8px",
-                                padding: "4px",
-                              }}
-                              value={phone}
-                              onChange={(e) => {
-                                const phone = e.target.value
-                                  .replace(/-/g, "")
-                                  .replace(/\(/g, "")
-                                  .replace(/\)/g, "")
-                                  .replace(/\+/g, "")
-                                  .replace(/\s/g, "")
-                                  .replace(/_/g, "");
-                                setPhone(phone);
-                              }}
-                            />
-                          </div>
-                          <input
-                            onClick={SendSMS}
-                            type="submit"
-                            style={{
-                              background: "#061b34",
-                              color: "white",
-                              border: "none",
-                              borderRadius: "8px",
-                              width: "60%",
-                              padding: "5px",
-                              marginBottom: "10px",
-                            }}
-                            value="Yuborish"
-                          />
-                          {networkError && (
-                            <p style={{ color: "red" }}>
-                              Internetga ulanmagan . Iltimos internetingizni
-                              qayta tekshirib kuring
-                            </p>
-                          )}
-                        </form>
-                      </Modal.Body>
-                    </Modal>
-                  </>
+                  <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton></Modal.Header>
+                    <Modal.Body style={{ textAlign: "center" }}>
+                      <h3>Qayta bo'g'laish</h3>
+                      <p style={{ color: "#6f818f" }}>
+                        Ism va telefon raqamingizni kiriting
+                      </p>
+                      <div>
+                        <div style={{ color: "#6f818f" }}>Ism</div>
+                        <input
+                          type="text"
+                          onChange={(e) => {
+                            const fio = e.target.value;
+                            setFio(fio);
+                          }}
+                          name="name"
+                          style={{
+                            width: "60%",
+                            margin: "10px 0",
+                            border: "1px solid rgba(20, 54, 80, 0.1)",
+                            background: "rgba(20, 54, 80, 0.1)",
+                            overflow: "hidden",
+                            borderRadius: "8px",
+                            padding: "4px",
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <div style={{ color: "#6f818f" }}>Telefon raqam</div>
+                        <InputMask
+                          className="InputMask"
+                          formatChars={{ b: "[0-9]" }}
+                          mask="+998 (bb) bbb-bb-bb"
+                          maskChar=""
+                          style={{
+                            width: "60%",
+                            margin: "10px 0",
+                            border: "1px solid rgba(20, 54, 80, 0.1)",
+                            background: "rgba(20, 54, 80, 0.1)",
+                            overflow: "hidden",
+                            borderRadius: "8px",
+                            padding: "4px",
+                          }}
+                          value={phone}
+                          onChange={(e) => {
+                            const phone = e.target.value
+                              .replace(/-/g, "")
+                              .replace(/\(/g, "")
+                              .replace(/\)/g, "")
+                              .replace(/\+/g, "")
+                              .replace(/\s/g, "")
+                              .replace(/_/g, "");
+                            setPhone(phone);
+                          }}
+                        />
+                      </div>
+                      <button
+                        onClick={SendSMS}
+                        style={{
+                          background: "#061b34",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "8px",
+                          width: "60%",
+                          padding: "5px",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        Yuborish
+                      </button>
+                      {networkError && (
+                        <p style={{ color: "red" }}>Nimadir xato</p>
+                      )}
+                    </Modal.Body>
+                  </Modal>
                 ) : (
-                  <>dddd</>
+                  <Modal>
+                    <Modal.Header closeButton></Modal.Header>
+                    <Modal.Body>
+                      Woohoo, you're reading this text in a modal!
+                    </Modal.Body>
+                  </Modal>
                 )}
                 <Select
                   defaultValue={selectedOption}
@@ -463,7 +514,14 @@ const Header = () => {
                 <DropdownButton
                   className="dropdownbutton"
                   id="button"
-                  title={`Maxsulotlar katalogi`}
+                  title={
+                    <>
+                      <img src="Group 10092.svg" width={20} height={14} />{" "}
+                      <span style={{ marginLeft: "5px" }}>
+                        Mahsulotlar katalogi
+                      </span>
+                    </>
+                  }
                 >
                   <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
                   <Dropdown.Item href="#/action-2">
@@ -489,19 +547,28 @@ const Header = () => {
                   width={20}
                   height={20}
                 />
-                <div className="bag-icons">
-                  <Image
-                    className="image"
-                    src="/Heart.svg"
-                    width={20}
-                    height={20}
-                  />
+                <Link style={{'display':'flex'} } href='/favorites'> 
+                  <div className="bag-icons">
+                    <Image
+                      className="image"
+                      src="/Heart.svg"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                  <span className="bag-title">Sevimlilar</span>
+                </Link>
+                <div style={{'display':'flex'}}>
+                  <div className="bag-icons">
+                    <Image
+                      className="bag-img"
+                      src="/Bag.svg"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                  <span className="bag-title">Savat</span>
                 </div>
-                <span className="bag-title">Sevimlilar</span>
-                <div className="bag-icons">
-                  <Image src="/Bag.svg" width={20} height={20} />
-                </div>
-                <span className="bag-title">Savat</span>
               </div>
             </div>
           </div>
