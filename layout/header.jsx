@@ -360,7 +360,8 @@ const Header = () => {
                 width={20}
                 height={20}
               />
-              <div  style={{'display':'flex'}}>
+              <Link href='/favorites'>
+              <div style={{ display: "flex" }}>
                 <div className="bag-icons">
                   <Image
                     className="image"
@@ -371,12 +372,15 @@ const Header = () => {
                 </div>
                 <span className="bag-title">Sevimlilar</span>
               </div>
-              <div style={{'display':'flex'}}>
+              </Link>
+              <Link href='/basket'>
+              <div style={{ display: "flex" }}>
                 <div className="bag-icons">
                   <Image src="/Bag.svg" width={20} height={20} />
                 </div>
                 <span className="bag-title">Savat</span>
               </div>
+              </Link>
             </div>
           </div>
         </Navbar>
@@ -388,14 +392,14 @@ const Header = () => {
         >
           <div>
             <nav className="container">
-            <Link href='/'>
-              <Image
-                style={{ alignItems: "center", display: "flex" }}
-                src="/logo.svg"
-                width={177}
-                height={52.2}
-              />
-            </Link>
+              <Link href="/">
+                <Image
+                  style={{ alignItems: "center", display: "flex" }}
+                  src="/logo.svg"
+                  width={177}
+                  height={52.2}
+                />
+              </Link>
               <div className="nav-right">
                 <a href="tel:+998998715668">+998 99 871 56 68</a>
                 <Image
@@ -547,7 +551,7 @@ const Header = () => {
                   width={20}
                   height={20}
                 />
-                <Link style={{'display':'flex'} } href='/favorites'> 
+                <Link style={{ display: "flex" }} href="/favorites">
                   <div className="bag-icons">
                     <Image
                       className="image"
@@ -558,17 +562,19 @@ const Header = () => {
                   </div>
                   <span className="bag-title">Sevimlilar</span>
                 </Link>
-                <div style={{'display':'flex'}}>
-                  <div className="bag-icons">
-                    <Image
-                      className="bag-img"
-                      src="/Bag.svg"
-                      width={20}
-                      height={20}
-                    />
+                <Link href="/basket">
+                  <div style={{ display: "flex" }}>
+                    <div className="bag-icons">
+                      <Image
+                        className="bag-img"
+                        src="/Bag.svg"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                    <span className="bag-title">Savat</span>
                   </div>
-                  <span className="bag-title">Savat</span>
-                </div>
+                </Link>
               </div>
             </div>
           </div>
