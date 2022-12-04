@@ -5,13 +5,12 @@ import { FreeMode, Navigation, Thumbs, Pagination, Autoplay } from "swiper";
 import { YMaps, Map, Placemark } from "react-yandex-maps";
 import Image from "next/image";
 import axios from "./api/axios";
+import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-/*import "swiper/css/free-mode";
-import "swiper/css/thumbs"; */
 
 import styled from "styled-components";
 export const StyleElement = styled.div`
@@ -352,17 +351,18 @@ export const StyleElement = styled.div`
     font-size: 16px;
     line-height: 19px;
   }
-  .like {
+  & .like {
     color: red;
-    transition: all 0.3s ease 0s;
     box-shadow: 0px 16px 20px rgba(0, 0, 0, 0.06);
     padding: 10px;
     border-radius: 50%;
-  }
-  .fa-heart {
     transition: all 0.3s ease 0s;
   }
-  .far {
+
+  & .fa-heart {
+    transition: all 0.3s ease 0s;
+  }
+  & .far {
     color: #738da3;
     transition: all 0.3s ease 0s;
   }
@@ -407,25 +407,30 @@ export const StyleElement = styled.div`
     }
   }
 `;
-
 export default function Home() {
-  const [resultImage, setResultImage] = useState("");
-  // const [results, setResults] = useState([]);
   const [views, setViews] = useState([]);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [category, setCategory] = useState([]);
-  //const [like, setLike] = useState(false);
-  //const [likes, setLikes] = useState([]);
+  const [basketss, setBaksetss] = useState([]);
   const { likes, results, baskets } = useSelector((state) => state.like);
   const dispatch = useDispatch();
   useEffect(() => {
+    let slikes = localStorage.getItem("slikes");
+    console.log("==jj==>", slikes);
+    slikes = JSON.parse(slikes?.length ? slikes : "[]");
+    console.log("====>", slikes);
+
+    let sbaskets = localStorage.getItem("sbaskets");
+    console.log("==jj==>", sbaskets);
+    sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
+    
     const data = new FormData();
     axios()
       .get("/drug/?per_page=6")
-      .then((response) => {
+      .then(
+        (response) => {
         const data = response?.data?.results;
         const results = Array.isArray(data) ? data : [];
-        //setResults(results);
         dispatch({
           type: "SET_RESULTS",
           payload: results,
@@ -435,7 +440,6 @@ export default function Home() {
           const results = value;
           results.Image.map((e) => {
             const resultImage = e.image;
-            //   setResultImage(resultImage);
             dispatch({
               type: "SET_IMAGE",
               payload: resultImage,
@@ -444,16 +448,6 @@ export default function Home() {
         }
       })
       .catch(() => console.log("err"));
-
-    // axios()
-    //   .get("/drug/?ids[]=44461&ids[]=45524&ids[]=46328")
-    //   .then((response) => {
-    //     const data = response?.data;
-    //     const views = Array.isArray(data) ? data : [];
-    //     setViews(views);
-    //   })
-    //   .catch(() => console.log("err"));
-
     axios()
       .get("/category/?lan=uz")
       .then((response) => {
@@ -464,52 +458,61 @@ export default function Home() {
   }, []);
 
   const Like = (id) => {
-    if (likes.includes(id)) {
-      // setLikes(likes.filter((item) => item !== id));
-      dispatch({
-        type: "SET_LIKES",
-        payload: likes.filter((item) => item !== id),
-      });
-    } else {
-      // setLikes([...likes, id]);
-      dispatch({
-        type: "SET_LIKES",
-        payload: [...likes, id],
-      });
-    }
-  };
-
-  const addBasket = (id) => {
+    let slikes = localStorage.getItem("slikes");
+    console.log("==jj==>", slikes);
+    slikes = JSON.parse(slikes?.length ? slikes : "[]");
+    console.log("====>", slikes);
     if (
-      baskets
+      slikes
         .map(({ id }) => {
           return id;
         })
         .includes(id)
     ) {
-      dispatch({
-        type: "DEL_BASKET",
-        payload: id,
+      const b = slikes;
+      let l = [];
+      b.forEach((obj) => {
+        if (obj.id !== id) {
+          l.push(obj);
+        }
       });
+      slikes = l;
+      localStorage.setItem("slikes", JSON.stringify(slikes));
     } else {
-      // setLikes([...likes, id]);
-      dispatch({
-        type: "SET_BASKET",
-        payload: id,
-      });
+      slikes = [...slikes, { id: id, count: 1 }];
+      localStorage.setItem("slikes", JSON.stringify(slikes));
     }
   };
+ 
+  const addBasket = (id) => {
+    let sbaskets = localStorage.getItem("sbaskets");
+    console.log("==jj==>", sbaskets);
+    sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
+    console.log("====>", sbaskets);
+    if (
+      sbaskets
+        .map(({ id }) => {
+          return id;
+        })
+        .includes(id)
+    ) {
+      const b = sbaskets;
+      let l = [];
+      b.forEach((obj) => {
+        if (obj.id !== id) {
+          l.push(obj);
+        }
+      });
+      sbaskets = l;
+      localStorage.setItem("sbaskets", JSON.stringify(sbaskets));
+    } else {
+      sbaskets = [...sbaskets, { id: id, count: 1 }];
+      localStorage.setItem("sbaskets", JSON.stringify(sbaskets));
+    }
+  };
+
   return (
     <div>
-      {console.log(
-        "2 basket find",
-        Object.assign(
-          {},
-          baskets.map(({ id }) => {
-            return id;
-          })
-        )
-      )}
       <Head>
         <title>Internet dorixona - Apotheca</title>
         <meta name="description" content="Generated by create next app" />
@@ -544,9 +547,10 @@ export default function Home() {
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
         />
       </Head>
+
       <StyleElement>
         <main className="content">
-          <div className="">
+          <div className="swiper">
             <Swiper
               slidesPerView={1.28}
               spaceBetween={50}
@@ -628,41 +632,49 @@ export default function Home() {
           </div>
           <div className="container">
             <h2>Maxsus takliflar</h2>
+
             <div className="cards">
-              {results.map(({ name, Country_of_origin, Manufacturer, id }) => {
-                return (
-                  <div
-                    className={
-                      baskets
-                        .map(({ id }) => {
-                          return id;
-                        })
-                        .includes(id)
-                        ? "card-item addshadow"
-                        : "card-item"
-                    }
-                  >
-                    <Image
-                      src={""}
-                      width={130}
-                      height={130}
-                      onError={(e) => {
-                        e.target.src =
-                          "https://www.svgindianmarket.com/images/thumbs/default-image_510.png";
-                        // some replacement image
-                      }}
-                    />
-                    <div>
-                      <h5>
-                        {Manufacturer.name}
-                        {Country_of_origin.name}
-                      </h5>
-                      <h4>
-                        {name.length <= 45 ? name : name.slice(0, 47) + "..."}
-                      </h4>
+              {results.map(
+                ({ name, Country_of_origin, Manufacturer, id, slug }) => {
+                  let sbaskets = localStorage.getItem("sbaskets");
+                  sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
+                  let slikes = localStorage.getItem("slikes");
+                  slikes = JSON.parse(slikes?.length ? slikes : "[]");
+                  console.log("likes", slikes);
+                  return (
+                    <div
+                      className={
+                        sbaskets
+                          .map(({ id }) => {
+                            return id;
+                          })
+                          .includes(id)
+                          ? "card-item addshadow"
+                          : "card-item"
+                      }
+                    >
+                      <Link href={"/categories/" + slug} key={slug}>
+                        <Image
+                          src={""}
+                          width={130}
+                          height={130}
+                          onError={(e) => {
+                            e.target.src =
+                              "https://www.svgindianmarket.com/images/thumbs/default-image_510.png";
+                            // some replacement image
+                          }}
+                        />
+                        <h5>
+                          {Manufacturer.name}
+                          {Country_of_origin.name}
+                        </h5>
+                        <h4>
+                          {name.length <= 45 ? name : name.slice(0, 47) + "..."}
+                        </h4>
+                      </Link>
                       <button
                         className={
-                          baskets
+                          sbaskets
                             .map(({ id }) => {
                               return id;
                             })
@@ -672,7 +684,7 @@ export default function Home() {
                         }
                         onClick={() => addBasket(id)}
                       >
-                        {baskets
+                        {sbaskets
                           .map(({ id }) => {
                             return id;
                           })
@@ -686,8 +698,7 @@ export default function Home() {
                             style={{ marginRight: "10px" }}
                           />
                         )}
-
-                        {baskets
+                        {sbaskets
                           .map(({ id }) => {
                             return id;
                           })
@@ -696,18 +707,25 @@ export default function Home() {
                           : "Savatga qo'shish"}
                       </button>
                       <i
-                        style={{ fontSize: "20px" }}
+                        style={{
+                          fontSize: "20px",
+                          transition: "all 0.3s ease 0s",
+                        }}
                         className={
-                          likes?.includes(id)
+                          slikes
+                            .map(({ id }) => {
+                              return id;
+                            })
+                            .includes(id)
                             ? `fa fa-heart like`
                             : "far fa-heart"
                         }
                         onClick={() => Like(id)}
                       ></i>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                }
+              )}
             </div>
           </div>
           <div className="container">

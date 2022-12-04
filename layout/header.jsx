@@ -8,6 +8,10 @@ import Modal from "react-bootstrap/Modal";
 import InputMask from "react-input-mask";
 import axios from "../pages/api/axios";
 import Link from "next/link";
+import DatalistInput from "react-datalist-input";
+import "react-datalist-input/dist/styles.css";
+import { useSelector } from "react-redux";
+
 const Navbar = styled.div`
 & nav {
   padding: 24px 0px;
@@ -19,8 +23,6 @@ const Navbar = styled.div`
 & .nav-right {
   align-items: center;
   display: flex;
-}
-
 }
 & a{
  text-decoration: none;
@@ -37,11 +39,21 @@ const Navbar = styled.div`
   padding: 12px 14px;
   border:1px solid #061b34;
   background-color:white;
-  
 }
- & .sticky-content{
-   background-color: #F7F8FC;
-   padding:24px 0px;
+& .navbarscrolltrue{
+  top: -100px; 
+  position: fixed;
+  transition: all 0.5s ease-in-out 0s;
+  width: 100%;
+  z-index: 4;
+}
+& .navbarscrollfalse{
+  position: fixed;
+  border-bottom: none;
+  top: 0px;
+  transition: all 0.5s ease-in-out 0s;
+  width: 100%;
+  z-index: 4;
  
 }
  & .dropdown-toggle::after {
@@ -98,7 +110,8 @@ const Navbar = styled.div`
  align-items:center;
  border-radius:50%;
  margin:2px 0px;
- margin-right:16px
+ margin-right:16px;
+ 
 }
 & .bag-title{
  display:flex;
@@ -114,20 +127,53 @@ const Navbar = styled.div`
 & Navbar{
   transition: all 0.5s ease-in-out 0s;
 }
-&.sticky-content{
-  animatsion : navbarbottom 0.5s ease;
+& .scrollimgtrue{
+  height: 0px;
+  margin: 0px;
+  transform-origin: left center;
+  transition-timing-function: ease-in-out;
+  min-width: 0px !important;
+  width: 0px !important;
 }
-& .modal-header{
-  border-bottom:none!important;
+& .scrollimgfalse{
+  height: 52px;
+  margin: 0px 24px 0px 0px;
+  transform-origin: left center;
+  transition-timing-function: ease-in-out;
+  min-width: 56px !important;
+  width: 56px !important;
 }
-@keyframes navbarbottom {
-  from {
-    top: 100%;
-  }
-  to {
-    top: 0%;
-  }
+& .trans5{
+  transition: .5s;
 }
+& .navbarbottom{
+  background: #F7F8FC;
+  padding:14px 0px;
+}
+& .react-datalist-input__textbox {
+  border:1px solid white;
+  outline:white solid 1px;
+}
+& .favoritescount{
+  -webkit-box-align: center;
+  align-items: center;
+  border-radius: 50%;
+  border: 2px solid rgb(255, 255, 255)!important;
+  bottom: -4px;
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  max-height: 20px;
+  min-width: 20px;
+  padding: 3px;
+  position: absolute;
+  font-size:11px;
+  font-weight:500;
+  left:20px;
+  background-color:red;
+  color:white;
+}
+
  @media (max-width: 768px){
    .nav-right a{
       display:none;
@@ -233,6 +279,7 @@ const options = [
 ];
 
 const Header = () => {
+
   const [selectedOption, setSelectedOption] = useState({
     label: (
       <>
@@ -248,14 +295,20 @@ const Header = () => {
     value: "",
     isDisabled: true,
   });
+
   const [scroll, setScroll] = useState(false);
   const [show, setShow] = useState(false);
   const [phone, setPhone] = useState("");
   const [fio, setFio] = useState("");
   const [step, setStep] = useState(0);
   const [networkError, setNetworkError] = useState(false);
+  const [data, setData] = useState([]);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [value, setvalue] = useState("");
+  const [id, setId] = useState(0);
+  const [baskets, setBaksets] = useState([]);
+  const [likes, setLikes] = useState([]);
   useEffect(() => {
     let position = window.pageYOffset;
     window.addEventListener("scroll", () => {
@@ -267,6 +320,13 @@ const Header = () => {
       }
       position = currentPosition;
     });
+    let sbaskets = localStorage.getItem("sbaskets");
+    sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
+    setBaksets(sbaskets);
+
+    let slikes = localStorage.getItem("slikes");
+    slikes = JSON.parse(slikes?.length ? slikes : "[]");
+    setLikes(slikes)
   }, []);
   const SendSMS = async (e) => {
     e.preventDefault();
@@ -293,19 +353,166 @@ const Header = () => {
     // );
   };
 
+  const Change = (e) => {
+    console.log("target", e.target.value);
+
+    let urlll = `/drug/search/?search=${
+      e.target.value.length >= 2 && e.target.value
+    }&lan=uz`;
+    axios()
+      .get(urlll)
+      .then((response) => {
+        console.log(
+          (response?.data?.data).map((data) => {
+            return data;
+          })
+        );
+        const dataa = (response?.data?.data).map((data) => {
+          return data;
+        });
+        setData(dataa);
+        const name = data.map(({ name }) => {
+          return name;
+        });
+        setvalue(name);
+        const idd = data.map(({ id }) => {
+          return id;
+        });
+        setId(idd);
+        console.log(
+          "data",
+          data.map(({ name }) => {
+            return name;
+          })
+        );
+      });
+  };
+  const className2 = scroll
+    ? "navbarscrolltrue     bg-white"
+    : " navbarscrollfalse   bg-white ";
+  const className3 = scroll
+    ? " scrollimgfalse trans5"
+    : " scrollimgtrue trans5";
   return (
     <div>
-      {scroll ? (
-        <Navbar
-          style={{
-            position: "fixed",
-            top: "0px",
-            width: "100%",
-            zIndex: "4",
-            transition: "all 0.5s ease-in-out 0s",
-          }}
-        >
-          <div className="sticky-content">
+      <Navbar style={{ position: "relative" }}>
+        <div className={className2}>
+          <nav className="container">
+            <Link href="/">
+              <Image
+                style={{ alignItems: "center", display: "flex" }}
+                src="/logo.svg"
+                width={177}
+                height={52.2}
+              />
+            </Link>
+            <div className="nav-right">
+              <a href="tel:+998998715668">+998 99 871 56 68</a>
+              <Image
+                variant="primary"
+                onClick={handleShow}
+                className="calling"
+                src="/Calling.svg"
+                width={24}
+                height={24}
+                style={{ cursor: "pointer" }}
+              />
+              <button variant="primary" onClick={handleShow}>
+                Qayta bog'lanish
+              </button>
+              {step === 0 ? (
+                <Modal show={show} onHide={handleClose}>
+                  <Modal.Header closeButton></Modal.Header>
+                  <Modal.Body style={{ textAlign: "center" }}>
+                    <h3>Qayta bo'g'laish</h3>
+                    <p style={{ color: "#6f818f" }}>
+                      Ism va telefon raqamingizni kiriting
+                    </p>
+                    <div>
+                      <div style={{ color: "#6f818f" }}>Ism</div>
+                      <input
+                        type="text"
+                        onChange={(e) => {
+                          const fio = e.target.value;
+                          setFio(fio);
+                        }}
+                        name="name"
+                        style={{
+                          width: "60%",
+                          margin: "10px 0",
+                          border: "1px solid rgba(20, 54, 80, 0.1)",
+                          background: "rgba(20, 54, 80, 0.1)",
+                          overflow: "hidden",
+                          borderRadius: "8px",
+                          padding: "4px",
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <div style={{ color: "#6f818f" }}>Telefon raqam</div>
+                      <InputMask
+                        className="InputMask"
+                        formatChars={{ b: "[0-9]" }}
+                        mask="+998 (bb) bbb-bb-bb"
+                        maskChar=""
+                        style={{
+                          width: "60%",
+                          margin: "10px 0",
+                          border: "1px solid rgba(20, 54, 80, 0.1)",
+                          background: "rgba(20, 54, 80, 0.1)",
+                          overflow: "hidden",
+                          borderRadius: "8px",
+                          padding: "4px",
+                        }}
+                        value={phone}
+                        onChange={(e) => {
+                          const phone = e.target.value
+                            .replace(/-/g, "")
+                            .replace(/\(/g, "")
+                            .replace(/\)/g, "")
+                            .replace(/\+/g, "")
+                            .replace(/\s/g, "")
+                            .replace(/_/g, "");
+                          setPhone(phone);
+                        }}
+                      />
+                    </div>
+                    <button
+                      onClick={SendSMS}
+                      style={{
+                        background: "#061b34",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "8px",
+                        width: "60%",
+                        padding: "5px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      Yuborish
+                    </button>
+                    {networkError && (
+                      <p style={{ color: "red" }}>Nimadir xato</p>
+                    )}
+                  </Modal.Body>
+                </Modal>
+              ) : (
+                <Modal>
+                  <Modal.Header closeButton></Modal.Header>
+                  <Modal.Body>
+                    Woohoo, you're reading this text in a modal!
+                  </Modal.Body>
+                </Modal>
+              )}
+              <Select
+                defaultValue={selectedOption}
+                onChange={setSelectedOption}
+                options={options}
+                {...defaultOptions}
+              />
+            </div>
+          </nav>
+          <div className="navbarbottom">
             <div
               className="container"
               style={{
@@ -314,15 +521,17 @@ const Header = () => {
                 alignItems: "center",
               }}
             >
-              <Image
-                src="/logo-image.svg"
-                style={{
-                  marginRight: "24px",
-                  transitionTimingFunction: "easeInOut",
-                }}
-                width={55}
-                height={52}
-              />
+              <Link href="/ ">
+                <Image
+                  src="/logo-image.svg"
+                  className={className3}
+                  style={{
+                    marginRight: "24px",
+                  }}
+                  width={0}
+                  height={0}
+                />
+              </Link>
               <DropdownButton
                 className="dropdownbutton"
                 id="button"
@@ -345,14 +554,26 @@ const Header = () => {
                 <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
               </DropdownButton>
               <form>
-                <input
+                <DatalistInput
                   type="text"
                   placeholder="Dori nomini kiriting..."
                   className="search-input"
+                  onSelect={(item) => console.log(item.value)}
+                  onChange={Change}
+                  items={data.map(({ id, name }) => ({
+                    id: id,
+                    value: name,
+                  }))}
                 />
                 <button className="search-btn">
                   <Image src="/Search.svg" width={20} height={20} />
                 </button>
+                <Image
+                  className="search-btn__after"
+                  src="/Search.svg"
+                  width={20}
+                  height={20}
+                />
               </form>
               <Image
                 className="search-btn__after"
@@ -360,226 +581,47 @@ const Header = () => {
                 width={20}
                 height={20}
               />
-              <Link href='/favorites'>
-              <div style={{ display: "flex" }}>
-                <div className="bag-icons">
-                  <Image
-                    className="image"
-                    src="/Heart.svg"
-                    width={20}
-                    height={20}
-                  />
-                </div>
-                <span className="bag-title">Sevimlilar</span>
-              </div>
-              </Link>
-              <Link href='/basket'>
-              <div style={{ display: "flex" }}>
-                <div className="bag-icons">
-                  <Image src="/Bag.svg" width={20} height={20} />
-                </div>
-                <span className="bag-title">Savat</span>
-              </div>
-              </Link>
-            </div>
-          </div>
-        </Navbar>
-      ) : (
-        <Navbar
-          style={{
-            animatsion: "navbarbottom 0.5s ease",
-          }}
-        >
-          <div>
-            <nav className="container">
-              <Link href="/">
-                <Image
-                  style={{ alignItems: "center", display: "flex" }}
-                  src="/logo.svg"
-                  width={177}
-                  height={52.2}
-                />
-              </Link>
-              <div className="nav-right">
-                <a href="tel:+998998715668">+998 99 871 56 68</a>
-                <Image
-                  variant="primary"
-                  onClick={handleShow}
-                  className="calling"
-                  src="/Calling.svg"
-                  width={24}
-                  height={24}
-                  style={{ cursor: "pointer" }}
-                />
-                <button variant="primary" onClick={handleShow}>
-                  Qayta bog'lanish
-                </button>
-                {step === 0 ? (
-                  <Modal show={show} onHide={handleClose}>
-                    <Modal.Header closeButton></Modal.Header>
-                    <Modal.Body style={{ textAlign: "center" }}>
-                      <h3>Qayta bo'g'laish</h3>
-                      <p style={{ color: "#6f818f" }}>
-                        Ism va telefon raqamingizni kiriting
-                      </p>
-                      <div>
-                        <div style={{ color: "#6f818f" }}>Ism</div>
-                        <input
-                          type="text"
-                          onChange={(e) => {
-                            const fio = e.target.value;
-                            setFio(fio);
-                          }}
-                          name="name"
-                          style={{
-                            width: "60%",
-                            margin: "10px 0",
-                            border: "1px solid rgba(20, 54, 80, 0.1)",
-                            background: "rgba(20, 54, 80, 0.1)",
-                            overflow: "hidden",
-                            borderRadius: "8px",
-                            padding: "4px",
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <div style={{ color: "#6f818f" }}>Telefon raqam</div>
-                        <InputMask
-                          className="InputMask"
-                          formatChars={{ b: "[0-9]" }}
-                          mask="+998 (bb) bbb-bb-bb"
-                          maskChar=""
-                          style={{
-                            width: "60%",
-                            margin: "10px 0",
-                            border: "1px solid rgba(20, 54, 80, 0.1)",
-                            background: "rgba(20, 54, 80, 0.1)",
-                            overflow: "hidden",
-                            borderRadius: "8px",
-                            padding: "4px",
-                          }}
-                          value={phone}
-                          onChange={(e) => {
-                            const phone = e.target.value
-                              .replace(/-/g, "")
-                              .replace(/\(/g, "")
-                              .replace(/\)/g, "")
-                              .replace(/\+/g, "")
-                              .replace(/\s/g, "")
-                              .replace(/_/g, "");
-                            setPhone(phone);
-                          }}
-                        />
-                      </div>
-                      <button
-                        onClick={SendSMS}
-                        style={{
-                          background: "#061b34",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "8px",
-                          width: "60%",
-                          padding: "5px",
-                          marginBottom: "10px",
-                        }}
-                      >
-                        Yuborish
-                      </button>
-                      {networkError && (
-                        <p style={{ color: "red" }}>Nimadir xato</p>
-                      )}
-                    </Modal.Body>
-                  </Modal>
-                ) : (
-                  <Modal>
-                    <Modal.Header closeButton></Modal.Header>
-                    <Modal.Body>
-                      Woohoo, you're reading this text in a modal!
-                    </Modal.Body>
-                  </Modal>
-                )}
-                <Select
-                  defaultValue={selectedOption}
-                  onChange={setSelectedOption}
-                  options={options}
-                  {...defaultOptions}
-                />
-              </div>
-            </nav>
-            <div className="sticky-content">
-              <div
-                className="container"
-                style={{
-                  display: "flex",
-                  justifyContent: "spaceBetween",
-                  alignItems: "center",
-                }}
-              >
-                <DropdownButton
-                  className="dropdownbutton"
-                  id="button"
-                  title={
-                    <>
-                      <img src="Group 10092.svg" width={20} height={14} />{" "}
-                      <span style={{ marginLeft: "5px" }}>
-                        Mahsulotlar katalogi
-                      </span>
-                    </>
-                  }
-                >
-                  <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">
-                    Another action
-                  </Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">
-                    Something else
-                  </Dropdown.Item>
-                </DropdownButton>
-                <form>
-                  <input
-                    type="text"
-                    placeholder="Dori nomini kiriting..."
-                    className="search-input"
-                  />
-                  <button className="search-btn">
-                    <Image src="/Search.svg" width={20} height={20} />
-                  </button>
-                </form>
-                <Image
-                  className="search-btn__after"
-                  src="/Search.svg"
-                  width={20}
-                  height={20}
-                />
-                <Link style={{ display: "flex" }} href="/favorites">
+              <Link style={{ display: "flex" }} href="/favorites">
+                <span className="" style={{ position: "relative" }}>
                   <div className="bag-icons">
                     <Image
-                      className="image"
+                      className="image basketicons"
                       src="/Heart.svg"
                       width={20}
                       height={20}
                     />
+                    {likes.length === 0 ? (
+                      ""
+                    ) : (
+                      <span className="favoritescount">{likes.length}</span>
+                    )}
                   </div>
-                  <span className="bag-title">Sevimlilar</span>
-                </Link>
-                <Link href="/basket">
-                  <div style={{ display: "flex" }}>
-                    <div className="bag-icons">
-                      <Image
-                        className="bag-img"
-                        src="/Bag.svg"
-                        width={20}
-                        height={20}
-                      />
-                    </div>
-                    <span className="bag-title">Savat</span>
+                </span>
+                <span className="bag-title">Sevimlilar</span>
+              </Link>
+              <Link href="/basket">
+                <span style={{ display: "flex", position: "relative" }}>
+                  <div className="bag-icons ">
+                    <Image
+                      className="bag-img basketicons"
+                      src="/Bag.svg"
+                      width={20}
+                      height={20}
+                    />
+                    {baskets.length === 0 ? (
+                      ""
+                    ) : (
+                      <span className="favoritescount">{baskets.length}</span>
+                    )}
                   </div>
-                </Link>
-              </div>
+
+                  <span className="bag-title">Savat</span>
+                </span>
+              </Link>
             </div>
           </div>
-        </Navbar>
-      )}
+        </div>
+      </Navbar>
     </div>
   );
 };

@@ -20,6 +20,7 @@ a:hover{
 }
 .content {
   min-height: calc(80vh);
+  margin-top:190px;
 }
 Link:hover{
  color:black;

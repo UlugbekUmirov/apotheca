@@ -3,7 +3,8 @@ const INITIAL_STATE = {
   results: [],
   resultImage: "",
   baskets: [],
-  count: 1,
+  slug: [],
+  slug: 0,
 };
 
 const reducers = (state = INITIAL_STATE, action) => {
@@ -11,15 +12,22 @@ const reducers = (state = INITIAL_STATE, action) => {
     case "SET_LIKES":
       return {
         ...state,
-        likes: action?.payload ?? [],
+        likes: [...state.baskets, { id: action?.payload ?? 0 }],
       };
     case "CLEAR_LIKES":
+      const bl = state.likes;
+      let llll = [];
+      bl.forEach((obj) => {
+        if (obj.id !== action.payload) {
+          llll.push(obj);
+        }
+      });
       return {
         ...state,
-        likes: [],
+        baskets: llll,
       };
+
     case "SET_RESULTS":
-      console.log("reducer", action?.payload);
       return {
         ...state,
         results: action?.payload ?? [],
@@ -34,24 +42,64 @@ const reducers = (state = INITIAL_STATE, action) => {
         ...state,
         baskets: [...state.baskets, { id: action?.payload ?? 0, count: 1 }],
       };
+    case "SET_COUNT":
+      const cc = state.results;
+      let sl = cc
+        .filter((item) => item.id === action?.payload)
+        .forEach(({ slug }) => {
+          return slug;
+        });
+      return {
+        ...state,
+        results: sl,
+      };
     case "DEL_BASKET":
       const b = state.baskets;
       let l = [];
       b.forEach((obj) => {
         if (obj.id !== action.payload) {
           l.push(obj);
-          console.log("llll", l);
         }
       });
       return {
         ...state,
         baskets: l,
       };
-    case "SET_COUNT":
-      console.log('count' ,count);
+    case "INCREMENT":
       return {
         ...state,
-        count: action?.payload ?? 1,
+        baskets: [...state.baskets, { id, count: action?.payload ?? 1 }],
+      };
+    case "ADD_COUNT_BASKET":
+      const bb = state.baskets;
+      let ll = [];
+      bb.forEach((obj) => {
+        if (obj.id === action.payload) {
+          ll.push({ ...obj, count: obj.count + 1 });
+        } else {
+          ll.push(obj);
+        }
+      });
+      return {
+        ...state,
+        baskets: ll,
+      };
+    case "MINUS_COUNT_BASKET":
+      const bbb = state.baskets;
+      let lll = [];
+      bbb.forEach((obj) => {
+        if (obj.id === action.payload) {
+          lll.push({
+            ...obj,
+            count: obj.count === 1 ? obj.count : obj.count - 1,
+          });
+        } else {
+          lll.push(obj);
+        }
+      });
+      return {
+        ...state,
+        baskets: lll,
       };
     default:
       return state;
