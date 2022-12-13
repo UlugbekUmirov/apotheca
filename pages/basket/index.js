@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
-import { StyleElement } from "../index";
 import Image from "next/image";
 import Head from "next/head";
 import styled from "styled-components";
+import { StyleElement } from "../index";
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
 
@@ -31,8 +31,6 @@ export default function Basket() {
   }, []);
 
   const addCount = (id) => {
-    // let ll = localStorage.getItem("ll");
-    // ll = JSON.parse(ll?.length ? ll : "[]");
     let ll = [];
     basketss.forEach((obj) => {
       if (obj.id === id) {
@@ -77,8 +75,12 @@ export default function Basket() {
   //   };
 
   const removeBasket = (id) => {
+    let sbaskets = localStorage.getItem("sbaskets");
+    console.log("==jj==>", sbaskets);
+    sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
+    console.log("====>", sbaskets);
     if (
-      basketss
+      sbaskets
         .map(({ id }) => {
           return id;
         })
@@ -86,10 +88,17 @@ export default function Basket() {
     ) {
       const newBasket = basket.filter((item) => item.id !== id);
       setBakset(newBasket);
-      dispatch({
-        type: "DEL_BASKET",
-        payload: id,
+
+      const b = sbaskets;
+      let l = [];
+      b.forEach((obj) => {
+        if (obj.id !== id) {
+          l.push(obj);
+        }
       });
+      sbaskets = l;
+      localStorage.setItem("sbaskets", JSON.stringify(sbaskets));
+      setBaksetss(l);
     }
   };
 
@@ -161,20 +170,22 @@ export default function Basket() {
                 O‘zingizga kerakli mahsulotlarni katalogdan yoki izlash xizmati
                 orqali toping
               </p>
-              <button
-                style={{
-                  background: "#E93235",
-                  borderRadius: "8px",
-                  padding: "15px 74px",
-                  color: "white",
-                  border: "none",
-                  fontWeight: "500",
-                  fontSize: " 16px",
-                  lineHeight: "19px",
-                }}
-              >
-                Katalog
-              </button>
+              <Link href="/categories">
+                <button
+                  style={{
+                    background: "#E93235",
+                    borderRadius: "8px",
+                    padding: "15px 74px",
+                    color: "white",
+                    border: "none",
+                    fontWeight: "500",
+                    fontSize: " 16px",
+                    lineHeight: "19px",
+                  }}
+                >
+                  Katalog
+                </button>
+              </Link>
             </div>
           </>
         ) : (

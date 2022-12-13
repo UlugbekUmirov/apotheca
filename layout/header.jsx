@@ -10,9 +10,8 @@ import axios from "../pages/api/axios";
 import Link from "next/link";
 import DatalistInput from "react-datalist-input";
 import "react-datalist-input/dist/styles.css";
-import { useSelector } from "react-redux";
 
-const Navbar = styled.div`
+export const Navbar = styled.div`
 & nav {
   padding: 24px 0px;
   display: flex;
@@ -72,7 +71,20 @@ const Navbar = styled.div`
   background-image:url('/Group 10092.svg') 
   content:''
 }
+& .search-input2{
+  border:none;
+  padding:10px 0px 10px 24px;
+  outline:none;
+  width:100%;
+  border-radius:8px;
+}
 
+& .search-input2::placeholder {
+  color:black;
+  font-weight:500;
+
+  color:#061B34;
+}
 & .search-input{
  border:none;
  padding:10px 0px 10px 24px;
@@ -173,8 +185,39 @@ const Navbar = styled.div`
   background-color:red;
   color:white;
 }
+.dropdownbtn {
+  display: inline-block; 
+}
+.dropdownbtn{
+  -webkit-box-align: center;
+  align-items: center;
+  border-radius: 8px;
+  display: flex;
+  height: 51px;
+  margin: 0px;
+  padding: 0px 24px;
+  transition: box-shadow 0.4s ease 0s;
+  white-space: nowrap;
+}
 
- @media (max-width: 768px){
+@media(max-width:992px){
+  .bag-title{
+    display:none;
+  } 
+  .katalog-title{
+   display:none;
+   margin: 0px 0px -2px;
+  } 
+   .catalogtext{
+   display:none;
+  }
+  .dropdownbtn{
+   padding:10px;
+   height:45px;
+  }
+}
+
+@media (max-width: 768px){
    .nav-right a{
       display:none;
     }
@@ -189,22 +232,12 @@ const Navbar = styled.div`
   }
   & .search-btn__after{
   display:block;
- 
   }
-  & form{
+  & .form1{
    display:none;
   }
 }
- 
-@media(max-width:992px){
-  .bag-title{
-    display:none;
-  } 
-  .katalog-title{
-   display:none;
-   margin: 0px 0px -2px;
-  } 
-}
+
 `;
 const defaultOptions = {
   isMulti: false,
@@ -258,7 +291,7 @@ const options = [
           height={18}
           style={{ marginRight: "5px" }}
         />
-        <span style={{ fontSize: "1px" }}>O'zbek tili</span>
+        <span style={{ fontSize: "12px" }}>Русский</span>
       </>
     ),
   },
@@ -272,14 +305,13 @@ const options = [
           height={18}
           style={{ marginRight: "5px" }}
         />
-        <span style={{ fontSize: "12px" }}>Русский</span>
+        <span style={{ fontSize: "12px" }}>O'zbek tili</span>
       </>
     ),
   },
 ];
 
 const Header = () => {
-
   const [selectedOption, setSelectedOption] = useState({
     label: (
       <>
@@ -289,10 +321,10 @@ const Header = () => {
           height={18}
           style={{ marginRight: "5px" }}
         />
-        <span style={{ fontSize: "14px" }}>O'zbek tili</span>
+        <span style={{ fontSize: "15px" }}>Русский</span>
       </>
     ),
-    value: "",
+    value: "ru",
     isDisabled: true,
   });
 
@@ -307,8 +339,14 @@ const Header = () => {
   const handleShow = () => setShow(true);
   const [value, setvalue] = useState("");
   const [id, setId] = useState(0);
-  const [baskets, setBaksets] = useState([]);
-  const [likes, setLikes] = useState([]);
+  const [basket, setBaksets] = useState([]);
+  const [like, setLikes] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [step1, setStep1] = useState(0);
+  const [target, setTarget] = useState("");
+  const [step3, setStep3] = useState(false);
+  const [child, setChild] = useState(0);
+  const [srch, setSrch] = useState(0);
   useEffect(() => {
     let position = window.pageYOffset;
     window.addEventListener("scroll", () => {
@@ -320,14 +358,25 @@ const Header = () => {
       }
       position = currentPosition;
     });
-    let sbaskets = localStorage.getItem("sbaskets");
-    sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
-    setBaksets(sbaskets);
 
-    let slikes = localStorage.getItem("slikes");
+    let sbaskets = window?.localStorage?.getItem("sbaskets");
+    sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
+
+    let slikes = window?.localStorage?.getItem("slikes");
     slikes = JSON.parse(slikes?.length ? slikes : "[]");
-    setLikes(slikes)
+
+    setBaksets(sbaskets);
+    setLikes(slikes);
+
+    axios()
+      .get("/category/?lan=uz")
+      .then((response) => {
+        const data = response?.data;
+        const categoryy = Array.isArray(data) ? data : [];
+        setCategory(categoryy);
+      });
   }, []);
+
   const SendSMS = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -354,19 +403,12 @@ const Header = () => {
   };
 
   const Change = (e) => {
-    console.log("target", e.target.value);
-
     let urlll = `/drug/search/?search=${
       e.target.value.length >= 2 && e.target.value
     }&lan=uz`;
     axios()
       .get(urlll)
       .then((response) => {
-        console.log(
-          (response?.data?.data).map((data) => {
-            return data;
-          })
-        );
         const dataa = (response?.data?.data).map((data) => {
           return data;
         });
@@ -379,20 +421,41 @@ const Header = () => {
           return id;
         });
         setId(idd);
-        console.log(
-          "data",
-          data.map(({ name }) => {
-            return name;
-          })
-        );
+        const tar = data.map(({ slug }) => {
+          return slug;
+        });
+        setTarget(tar);
       });
   };
+
+  const handledatalist = () => {
+    setStep3(!step3);
+    if (
+      window.location.href ===
+      "/categories?category_id=" +
+        category.map(({ id }) => {
+          return id;
+        })
+    ) {
+      setStep3(false);
+    }
+  };
+  const handleChild = () => {
+    setChild(1);
+  };
+  const handleSearch = () => {
+    setSrch(1);
+  };
+  /*  document.addEventListener("click", () => {
+    setSrch(0);
+  }); */
   const className2 = scroll
-    ? "navbarscrolltrue     bg-white"
-    : " navbarscrollfalse   bg-white ";
+    ? "navbarscrolltrue    bg-white"
+    : "navbarscrollfalse   bg-white ";
   const className3 = scroll
     ? " scrollimgfalse trans5"
     : " scrollimgtrue trans5";
+
   return (
     <div>
       <Navbar style={{ position: "relative" }}>
@@ -517,107 +580,245 @@ const Header = () => {
               className="container"
               style={{
                 display: "flex",
-                justifyContent: "spaceBetween",
+                justifyContent: "space-between",
                 alignItems: "center",
               }}
             >
-              <Link href="/ ">
-                <Image
-                  src="/logo-image.svg"
-                  className={className3}
-                  style={{
-                    marginRight: "24px",
-                  }}
-                  width={0}
-                  height={0}
-                />
-              </Link>
-              <DropdownButton
-                className="dropdownbutton"
-                id="button"
-                title={
-                  <>
-                    <img src="Group 10092.svg" width={20} height={14} />{" "}
-                    <span
-                      style={{ marginLeft: "5px" }}
-                      className="katalog-title"
-                    >
-                      Mahsulotlar katalogi
-                    </span>
-                  </>
-                }
-              >
-                <Dropdown.Item layout="responsive" href="#/action-1">
-                  Action
-                </Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </DropdownButton>
-              <form>
-                <DatalistInput
-                  type="text"
-                  placeholder="Dori nomini kiriting..."
-                  className="search-input"
-                  onSelect={(item) => console.log(item.value)}
-                  onChange={Change}
-                  items={data.map(({ id, name }) => ({
-                    id: id,
-                    value: name,
-                  }))}
-                />
-                <button className="search-btn">
-                  <Image src="/Search.svg" width={20} height={20} />
+              <div style={{ display: "flex", width: "100%" }}>
+                <Link href="/">
+                  <Image
+                    src="/logo-image.svg"
+                    className={className3}
+                    style={{
+                      marginRight: "24px",
+                    }}
+                    width={0}
+                    height={0}
+                  />
+                </Link>
+                <button
+                  style={{ background: "#061b34" }}
+                  className="dropdownbtn"
+                  onClick={handledatalist}
+                >
+                  <Image src="/Group 10092.svg" width={20} height={14} />
+
+                  <span
+                    style={{ color: "white", marginLeft: "5px" }}
+                    className="catalogtext"
+                  >
+                    Maxsulot katalogi
+                  </span>
                 </button>
+                {step3 === true ? (
+                  <>
+                    <ul
+                      style={{
+                        background: "white",
+                        boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+                        padding: "0",
+                        width: "440px",
+                        overflowY: "scroll",
+                        maxHeight: "400px",
+                        position: "absolute",
+                        top: "170px",
+                      }}
+                    >
+                      <li onClick={handleChild}>
+                        {category.map(({ name, childs, id }) => {
+                          return (
+                            <>
+                              <div
+                                style={{
+                                  padding: "7.5px ",
+                                  cursor: "pointer",
+                                  border: "1px solid #f7f8fc",
+                                }}
+                              >
+                                {name}
+                              </div>
+                              {child === 1 ? (
+                                <>
+                                  <ul style={{ background: "#F7F8FC" }}>
+                                    <Link
+                                      href={"/categories?category_id=" + id}
+                                    >
+                                      <li
+                                        style={{
+                                          listStyle: "none",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        <span>
+                                          {childs.map(({ description }) => {
+                                            return (
+                                              <div
+                                                style={{
+                                                  paddingTop: "7.5px",
+                                                  paddingBottom: "7.5px",
+                                                }}
+                                              >
+                                                {"● " + description}
+                                              </div>
+                                            );
+                                          })}
+                                        </span>
+                                      </li>
+                                    </Link>
+                                  </ul>
+                                </>
+                              ) : (
+                                ""
+                              )}
+                            </>
+                          );
+                        })}
+                      </li>
+                    </ul>
+                  </>
+                ) : (
+                  ""
+                )}
+                <form className="form1">
+                  <DatalistInput
+                    type="text"
+                    placeholder="Dori nomini kiriting..."
+                    className="search-input"
+                    onSelect={({ slug }) => {
+                      window.location.href = "/categories/" + slug;
+                    }}
+                    onChange={Change}
+                    items={data.map(({ id, name, slug }) => ({
+                      id: id,
+                      value: name,
+                      slug: slug,
+                    }))}
+                  />
+                  <button className="search-btn">
+                    <Image src="/Search.svg" width={20} height={20} />
+                  </button>
+
+                  <Image
+                    className="search-btn__after"
+                    src="/Search.svg"
+                    width={20}
+                    height={20}
+                  />
+                </form>
+              </div>
+              <div style={{ display: "flex", alignItems: "center" }}>
                 <Image
-                  className="search-btn__after"
+                  className="search-btn__after search-res"
                   src="/Search.svg"
                   width={20}
                   height={20}
+                  style={{ textAlign: "end", paddingRight: "10px" }}
+                  onClick={handleSearch}
                 />
-              </form>
-              <Image
-                className="search-btn__after"
-                src="/Search.svg"
-                width={20}
-                height={20}
-              />
-              <Link style={{ display: "flex" }} href="/favorites">
-                <span className="" style={{ position: "relative" }}>
-                  <div className="bag-icons">
-                    <Image
-                      className="image basketicons"
-                      src="/Heart.svg"
-                      width={20}
-                      height={20}
-                    />
-                    {likes.length === 0 ? (
-                      ""
-                    ) : (
-                      <span className="favoritescount">{likes.length}</span>
-                    )}
-                  </div>
-                </span>
-                <span className="bag-title">Sevimlilar</span>
-              </Link>
-              <Link href="/basket">
-                <span style={{ display: "flex", position: "relative" }}>
-                  <div className="bag-icons ">
-                    <Image
-                      className="bag-img basketicons"
-                      src="/Bag.svg"
-                      width={20}
-                      height={20}
-                    />
-                    {baskets.length === 0 ? (
-                      ""
-                    ) : (
-                      <span className="favoritescount">{baskets.length}</span>
-                    )}
-                  </div>
+                <div
+                  className={"search-2"}
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    zIndex: "9999999999999",
+                    left: "-24px",
+                  }}
+                >
+                  {srch === 1 ? (
+                    <>
+                      <form className="form2">
+                        <DatalistInput
+                          type="text"
+                          placeholder="Dori nomini kiriting..."
+                          className="search-input2"
+                          onSelect={({ slug }) => {
+                            window.location.href = "/categories/" + slug;
+                          }}
+                          onChange={Change}
+                          items={data.map(({ id, name, slug }) => ({
+                            id: id,
+                            value: name,
+                            slug: slug,
+                          }))}
+                        />
+                        <button className="search-btn">
+                          <Image src="/Search.svg" width={20} height={20} />
+                        </button>
+                      </form>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <Link style={{ display: "flex" }} href="/favorites">
+                  <span className="" style={{ position: "relative" }}>
+                    <div className="bag-icons">
+                      <Image
+                        className="image basketicons"
+                        src="/Heart.svg"
+                        width={20}
+                        height={20}
+                      />
 
-                  <span className="bag-title">Savat</span>
-                </span>
-              </Link>
+                      {JSON.parse(
+                        typeof window !== "undefined"
+                          ? window?.localStorage?.getItem("slikes")?.length
+                            ? window?.localStorage?.getItem("slikes")
+                            : "[]"
+                          : "[]"
+                      ).length === 0 ? (
+                        ""
+                      ) : (
+                        <span className="favoritescount">
+                          {
+                            JSON.parse(
+                              localStorage?.getItem("slikes")?.length
+                                ? localStorage?.getItem("slikes")
+                                : "[]"
+                            ).length
+                          }
+                        </span>
+                      )}
+                    </div>
+                  </span>
+                  <span className="bag-title">Sevimlilar</span>
+                </Link>
+                <Link href="/basket">
+                  <span style={{ display: "flex", position: "relative" }}>
+                    <div className="bag-icons ">
+                      <Image
+                        className="bag-img basketicons"
+                        src="/Bag.svg"
+                        width={20}
+                        height={20}
+                      />
+                      {JSON.parse(
+                        typeof window != "undefined"
+                          ? window?.localStorage?.getItem("sbaskets")?.length
+                            ? window?.localStorage?.getItem("sbaskets")
+                            : "[]"
+                          : "[]"
+                      ).length === 0 ? (
+                        ""
+                      ) : (
+                        <span className="favoritescount">
+                          {
+                            JSON.parse(
+                              typeof window != "undefined"
+                                ? window?.localStorage?.getItem("sbaskets")
+                                    ?.length
+                                  ? window?.localStorage?.getItem("sbaskets")
+                                  : "[]"
+                                : "[]"
+                            ).length
+                          }
+                        </span>
+                      )}
+                    </div>
+                    <span className="bag-title">Savat</span>
+                  </span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

@@ -6,10 +6,12 @@ import axios from "../api/axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-const StyleElementt = styled.div``;
+
 export default function Favorites() {
   const [likes, setLikes] = useState([]);
   const [like, setLike] = useState([]);
+  const [likee, setlike] = useState([]);
+  const [sbasket, setSbasket] = useState([]);
   useEffect(() => {
     let slikes = localStorage.getItem("slikes");
     slikes = JSON.parse(slikes?.length ? slikes : "[]");
@@ -46,12 +48,16 @@ export default function Favorites() {
         if (obj.id !== id) {
           l.push(obj);
         }
+        const newBasket = like.filter((item) => item.id !== id);
+        setLike(newBasket);
       });
       slikes = l;
       localStorage.setItem("slikes", JSON.stringify(slikes));
+      setlike(l);
     } else {
       slikes = [...slikes, { id: id, count: 1 }];
       localStorage.setItem("slikes", JSON.stringify(slikes));
+      setlike(slikes);
     }
   };
 
@@ -76,9 +82,11 @@ export default function Favorites() {
       });
       sbaskets = l;
       localStorage.setItem("sbaskets", JSON.stringify(sbaskets));
+      setSbasket(l);
     } else {
       sbaskets = [...sbaskets, { id: id, count: 1 }];
       localStorage.setItem("sbaskets", JSON.stringify(sbaskets));
+      setSbasket(sbaskets);
     }
   };
   return (
@@ -102,7 +110,7 @@ export default function Favorites() {
           </div>
           <div>
             <StyleElement>
-              {likes.length === 0 ? (
+              {like.length === 0 ? (
                 <>
                   <div
                     className=""
@@ -128,29 +136,29 @@ export default function Favorites() {
                       Mahsulotlar katalogi orqali sevimli mahsulotlaringizni
                       qo‘shing
                     </p>
-                    <button
-                      style={{
-                        background: "#E93235",
-                        borderRadius: "8px",
-                        padding: "15px 74px",
-                        color: "white",
-                        border: "none",
-                        fontWeight: "500",
-                        fontSize: " 16px",
-                        lineHeight: "19px",
-                      }}
-                    >
-                      Katalogga o'tish
-                    </button>
+                    <Link href="/categories">
+                      <button
+                        style={{
+                          background: "#E93235",
+                          borderRadius: "8px",
+                          padding: "15px 74px",
+                          color: "white",
+                          border: "none",
+                          fontWeight: "500",
+                          fontSize: " 16px",
+                          lineHeight: "19px",
+                        }}
+                      >
+                        Katalogga o'tish
+                      </button>
+                    </Link>
                   </div>
                 </>
               ) : (
                 <div className="cards">
                   {like.map(({ name, Country_of_origin, Manufacturer, id }) => {
-                    /*  */
                     let sbaskets = localStorage.getItem("sbaskets");
                     sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
-                    /*  */
                     let slikes = localStorage.getItem("slikes");
                     slikes = JSON.parse(slikes?.length ? slikes : "[]");
                     console.log("likes", slikes);
@@ -178,8 +186,8 @@ export default function Favorites() {
                         />
                         <div>
                           <h5>
-                            {Manufacturer.name}
-                            {Country_of_origin.name}
+                            {Manufacturer?.name ?? ""}
+                            {Country_of_origin?.name ?? ""}
                           </h5>
                           <h4>
                             {name.length <= 45

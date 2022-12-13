@@ -254,7 +254,7 @@ export const StyleElement = styled.div`
     background-position: right center;
     background-repeat: no-repeat;
     border-radius: 32px;
-    padding: calc(57.6px + 20px);
+    padding: calc(50px );
   }
   & .action h2 {
     font-weight: 700;
@@ -366,10 +366,18 @@ export const StyleElement = styled.div`
     color: #738da3;
     transition: all 0.3s ease 0s;
   }
-
+  @media (max-width: 1200px) {
+    .card-item .btn {
+      font-size: 15px;
+      padding: 12px 1px;
+    }
+  }
   @media (max-width: 1100px) {
     .card-item {
       min-width: calc(33.3333% - 24px);
+    }
+    .action h2 {
+       font-size:25px;
     }
   }
   @media (max-width: 991px) {
@@ -401,6 +409,30 @@ export const StyleElement = styled.div`
       min-width: calc(50% - 24px);
     }
   }
+  @media (max-width: 768px) {
+    .action {
+    
+      background-image: none;
+      background-color: #f7f8fc;
+      background-position: right center;
+      background-repeat: no-repeat;
+      border-radius: 20px;
+      padding: calc( 20px + 3vw);
+    }
+    .action h2 {
+      font-size: 20px;
+      width:100%;
+
+    }
+    & .action button {
+      padding: 16px 30px;
+      background: #e93235;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      width:100%;
+    }
+  }
   @media (max-width: 500px) {
     .card-item {
       min-width: calc(100% - 24px);
@@ -412,23 +444,22 @@ export default function Home() {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [category, setCategory] = useState([]);
   const [basketss, setBaksetss] = useState([]);
-  const { likes, results, baskets } = useSelector((state) => state.like);
+  const [likee, setLikee] = useState([]);
+  const { results } = useSelector((state) => state.like);
   const dispatch = useDispatch();
   useEffect(() => {
-    let slikes = localStorage.getItem("slikes");
-    console.log("==jj==>", slikes);
-    slikes = JSON.parse(slikes?.length ? slikes : "[]");
-    console.log("====>", slikes);
-
-    let sbaskets = localStorage.getItem("sbaskets");
-    console.log("==jj==>", sbaskets);
-    sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
-    
     const data = new FormData();
     axios()
+      .get("/category/?lan=uz")
+      .then((response) => {
+        const data = response?.data;
+        const categoryy = Array.isArray(data) ? data : [];
+        setCategory(categoryy);
+      });
+
+    axios()
       .get("/drug/?per_page=6")
-      .then(
-        (response) => {
+      .then((response) => {
         const data = response?.data?.results;
         const results = Array.isArray(data) ? data : [];
         dispatch({
@@ -448,20 +479,11 @@ export default function Home() {
         }
       })
       .catch(() => console.log("err"));
-    axios()
-      .get("/category/?lan=uz")
-      .then((response) => {
-        const data = response?.data;
-        const category = Array.isArray(data) ? data : [];
-        setCategory(category);
-      });
   }, []);
 
   const Like = (id) => {
     let slikes = localStorage.getItem("slikes");
-    console.log("==jj==>", slikes);
     slikes = JSON.parse(slikes?.length ? slikes : "[]");
-    console.log("====>", slikes);
     if (
       slikes
         .map(({ id }) => {
@@ -478,17 +500,17 @@ export default function Home() {
       });
       slikes = l;
       localStorage.setItem("slikes", JSON.stringify(slikes));
+      setLikee(l);
     } else {
       slikes = [...slikes, { id: id, count: 1 }];
       localStorage.setItem("slikes", JSON.stringify(slikes));
+      setLikee(slikes);
     }
   };
- 
+
   const addBasket = (id) => {
     let sbaskets = localStorage.getItem("sbaskets");
-    console.log("==jj==>", sbaskets);
     sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
-    console.log("====>", sbaskets);
     if (
       sbaskets
         .map(({ id }) => {
@@ -505,9 +527,11 @@ export default function Home() {
       });
       sbaskets = l;
       localStorage.setItem("sbaskets", JSON.stringify(sbaskets));
+      setBaksetss(l);
     } else {
       sbaskets = [...sbaskets, { id: id, count: 1 }];
       localStorage.setItem("sbaskets", JSON.stringify(sbaskets));
+      setBaksetss(sbaskets);
     }
   };
 
@@ -547,7 +571,6 @@ export default function Home() {
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
         />
       </Head>
-
       <StyleElement>
         <main className="content">
           <div className="swiper">
@@ -570,7 +593,9 @@ export default function Home() {
                     Ваш <span style={{ color: "#E93235" }}>первый шаг</span> к
                     активному долголетию
                   </h1>
-                  <button className="batafsil-btn">Подробнее</button>
+                  <Link href="/categories">
+                    <button className="batafsil-btn">Подробнее</button>
+                  </Link>
                 </div>
               </SwiperSlide>
               <SwiperSlide>
@@ -579,7 +604,9 @@ export default function Home() {
                     Ваш <span style={{ color: "#E93235" }}>первый шаг</span> к
                     активному долголетию
                   </h1>
-                  <button className="batafsil-btn">Подробнее</button>
+                  <Link href="/categories">
+                    <button className="batafsil-btn">Подробнее</button>
+                  </Link>
                 </div>
               </SwiperSlide>
             </Swiper>
@@ -632,7 +659,6 @@ export default function Home() {
           </div>
           <div className="container">
             <h2>Maxsus takliflar</h2>
-
             <div className="cards">
               {results.map(
                 ({ name, Country_of_origin, Manufacturer, id, slug }) => {
@@ -729,9 +755,9 @@ export default function Home() {
             </div>
           </div>
           <div className="container">
-            <h2>Oxirgi ko'rilganlar</h2>
+            {/*    <h2>Oxirgi ko'rilganlar</h2> */}
             <div className="cards">
-              {views.map(({ Country_of_origin, Manufacturer, name, id }) => {
+              {/* {views.map(({ Country_of_origin, Manufacturer, name, id }) => {
                 return (
                   <>
                     <div className="card-item">
@@ -782,18 +808,21 @@ export default function Home() {
                     </div>
                   </>
                 );
-              })}
+              })} */}
             </div>
           </div>
           <div className="container">
             <div className="action">
               <h2>Sog‘lom tana sari harakatingizni bugundan boshlang!</h2>
-              <button>Maxsulotlarni ko'rish</button>
+              <Link href="/categories">
+                <button>Maxsulotlarni ko'rish</button>
+              </Link>
             </div>
           </div>
           <div className="container">
             <h2 style={{ margin: "40px 0px" }}>Ommabop kategoriyalar</h2>
             <div className="cards">
+              {console.log("category", category)}
               {category.map(({ name }) => {
                 return (
                   <>
