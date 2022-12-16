@@ -125,7 +125,7 @@ const Globe = () => (
     </defs>
   </svg>
 );
-export default function About() {
+export default function Language() {
   const ref = useRef(null);
   const router = useRouter();
   const { i18n } = useContext(I18nContext);
@@ -135,9 +135,7 @@ export default function About() {
     localStorage.setItem("lan", locale);
     setActive(!active);
     router.push(asPath, asPath, { locale });
-    // router.push(`${locale}${asPath}`, ${locale}${asPath}, {
-    //  locale: false,
-    // });
+    
   };
   const [active, setActive] = useState(false);
   useEffect(() => {
@@ -150,7 +148,7 @@ export default function About() {
     };
   }, [active, ref]);
   return (
-    <StyledElement isActive={active} className="container content">
+    <StyledElement isActive={active}>
       <button
         onClick={(e) => {
           e.stopPropagation();

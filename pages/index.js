@@ -2,7 +2,6 @@ import Head from "next/head";
 import { Swiper, SwiperSlide } from "swiper/react";
 import React, { useEffect, useState } from "react";
 import { FreeMode, Navigation, Thumbs, Pagination, Autoplay } from "swiper";
-import { YMaps, Map, Placemark } from "react-yandex-maps";
 import Image from "next/image";
 import axios from "./api/axios";
 import Link from "next/link";
@@ -13,6 +12,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import styled from "styled-components";
+import { useTranslation } from "next-i18next";
 export const StyleElement = styled.div`
   & .swiper-slide {
     font-size: 18px;
@@ -254,7 +254,7 @@ export const StyleElement = styled.div`
     background-position: right center;
     background-repeat: no-repeat;
     border-radius: 32px;
-    padding: calc(50px );
+    padding: calc(50px);
   }
   & .action h2 {
     font-weight: 700;
@@ -377,7 +377,7 @@ export const StyleElement = styled.div`
       min-width: calc(33.3333% - 24px);
     }
     .action h2 {
-       font-size:25px;
+      font-size: 25px;
     }
   }
   @media (max-width: 991px) {
@@ -411,18 +411,16 @@ export const StyleElement = styled.div`
   }
   @media (max-width: 768px) {
     .action {
-    
       background-image: none;
       background-color: #f7f8fc;
       background-position: right center;
       background-repeat: no-repeat;
       border-radius: 20px;
-      padding: calc( 20px + 3vw);
+      padding: calc(20px + 3vw);
     }
     .action h2 {
       font-size: 20px;
-      width:100%;
-
+      width: 100%;
     }
     & .action button {
       padding: 16px 30px;
@@ -430,7 +428,7 @@ export const StyleElement = styled.div`
       color: white;
       border: none;
       border-radius: 8px;
-      width:100%;
+      width: 100%;
     }
   }
   @media (max-width: 500px) {
@@ -440,6 +438,7 @@ export const StyleElement = styled.div`
   }
 `;
 export default function Home() {
+  const { t } = useTranslation("common", { keyPrefix: "home" });
   const [views, setViews] = useState([]);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [category, setCategory] = useState([]);
@@ -594,7 +593,7 @@ export default function Home() {
                     активному долголетию
                   </h1>
                   <Link href="/categories">
-                    <button className="batafsil-btn">Подробнее</button>
+                    <button className="batafsil-btn">{t("sliderbutton")}</button>
                   </Link>
                 </div>
               </SwiperSlide>
@@ -605,7 +604,7 @@ export default function Home() {
                     активному долголетию
                   </h1>
                   <Link href="/categories">
-                    <button className="batafsil-btn">Подробнее</button>
+                    <button className="batafsil-btn">{t("button")}</button>
                   </Link>
                 </div>
               </SwiperSlide>

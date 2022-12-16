@@ -6,8 +6,9 @@ import styled from "styled-components";
 import { StyleElement } from "../index";
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
-
+import { useRouter } from "next/router";
 export default function Basket() {
+  const {locale} = useRouter()
   const { baskets } = useSelector((state) => state.like);
   const dispatch = useDispatch();
   const [basket, setBakset] = useState([]);

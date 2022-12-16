@@ -1,16 +1,15 @@
 import Image from "next/image";
 import styled from "styled-components";
-import Select from "react-select";
 import { useEffect, useState } from "react";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import Modal from "react-bootstrap/Modal";
 import InputMask from "react-input-mask";
 import axios from "../pages/api/axios";
 import Link from "next/link";
 import DatalistInput from "react-datalist-input";
 import "react-datalist-input/dist/styles.css";
-
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import Language from "./Language";
 export const Navbar = styled.div`
 & nav {
   padding: 24px 0px;
@@ -280,8 +279,10 @@ const defaultOptions = {
     }),
   },
 };
-const options = [
-  {
+
+/* const options = [
+  
+   {
     value: "uz",
     label: (
       <>
@@ -308,11 +309,13 @@ const options = [
         <span style={{ fontSize: "12px" }}>O'zbek tili</span>
       </>
     ),
-  },
-];
+  }, 
+]; */
 
-const Header = () => {
-  const [selectedOption, setSelectedOption] = useState({
+const Header = (props) => {
+  const { locale } = useRouter();
+  const { t } = useTranslation("common", { keyPrefix: "header" });
+  /* const [selectedOption, setSelectedOption] = useState({
     label: (
       <>
         <img
@@ -326,7 +329,7 @@ const Header = () => {
     ),
     value: "ru",
     isDisabled: true,
-  });
+  }); */
 
   const [scroll, setScroll] = useState(false);
   const [show, setShow] = useState(false);
@@ -342,7 +345,7 @@ const Header = () => {
   const [basket, setBaksets] = useState([]);
   const [like, setLikes] = useState([]);
   const [category, setCategory] = useState([]);
-  const [step1, setStep1] = useState(0);
+
   const [target, setTarget] = useState("");
   const [step3, setStep3] = useState(false);
   const [child, setChild] = useState(0);
@@ -458,10 +461,11 @@ const Header = () => {
 
   return (
     <div>
+      <span>{props.locale}</span>
       <Navbar style={{ position: "relative" }}>
         <div className={className2}>
           <nav className="container">
-            <Link href="/">
+            <Link href="/" locale={locale}>
               <Image
                 style={{ alignItems: "center", display: "flex" }}
                 src="/logo.svg"
@@ -481,7 +485,7 @@ const Header = () => {
                 style={{ cursor: "pointer" }}
               />
               <button variant="primary" onClick={handleShow}>
-                Qayta bog'lanish
+                {t("contact")}
               </button>
               {step === 0 ? (
                 <Modal show={show} onHide={handleClose}>
@@ -567,12 +571,13 @@ const Header = () => {
                   </Modal.Body>
                 </Modal>
               )}
-              <Select
+              <Language />
+              {/*  <Select
                 defaultValue={selectedOption}
                 onChange={setSelectedOption}
                 options={options}
                 {...defaultOptions}
-              />
+              /> */}
             </div>
           </nav>
           <div className="navbarbottom">
@@ -750,7 +755,11 @@ const Header = () => {
                     <></>
                   )}
                 </div>
-                <Link style={{ display: "flex" }} href="/favorites">
+                <Link
+                  style={{ display: "flex" }}
+                  href="/favorites"
+                  locale={locale}
+                >
                   <span className="" style={{ position: "relative" }}>
                     <div className="bag-icons">
                       <Image
@@ -783,7 +792,7 @@ const Header = () => {
                   </span>
                   <span className="bag-title">Sevimlilar</span>
                 </Link>
-                <Link href="/basket">
+                <Link href="/basket" locale={locale}>
                   <span style={{ display: "flex", position: "relative" }}>
                     <div className="bag-icons ">
                       <Image
@@ -826,4 +835,5 @@ const Header = () => {
     </div>
   );
 };
+
 export default Header;
