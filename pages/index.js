@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import React, { useEffect, useState } from "react";
 import { FreeMode, Navigation, Thumbs, Pagination, Autoplay } from "swiper";
 import Image from "next/image";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import axios from "./api/axios";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -63,8 +64,6 @@ export const StyleElement = styled.div`
   }
   .swiper-slide-prev .slider1,
   .swiper-slide-next .slider1 {
-    margin: 43px 0px;
-    height: 438px;
     color: #f7f8fc;
   }
   & .swiper-button-prev {
@@ -79,25 +78,23 @@ export const StyleElement = styled.div`
   }
   & .slider2 {
     margin-top: 50px;
-    position: relative;
   }
 
   & .swiper-button-prev {
+    position: absolute;
     top: 50%;
     left: 10%;
   }
 
   & .swiper-button-next {
+    position: absolute;
     top: 50%;
     right: 10%;
   }
   & .swiper-button-prev::after {
     display: none;
   }
-
   & .slider1 {
-    /*  background-image: url("slider 1.png"); */
-    padding-bottom: 114px;
     width: 100%;
     height: auto;
     border-radius: 32px;
@@ -110,25 +107,25 @@ export const StyleElement = styled.div`
       url("/slider 1.png");
     background-position: right center;
     background-repeat: no-repeat;
+    positsion: relative;
   }
   & .slider2 {
     background-image: url("slider 1.png");
-    width: 1170px;
     layout: responsive;
     height: auto;
-    display: block;
+
+    positsion: relative;
   }
 
   .slider1 h1,
   .slider2 h1 {
-    positsion: relative;
     color: #23272b;
     width: 35%;
     font-weight: 700;
     font-size: 48px;
     line-height: 150%;
     margin-left: 8%;
-    margin-top: 10%;
+    margin-top: 8%;
   }
   & .batafsil-btn {
     padding: 16px 30px;
@@ -138,6 +135,7 @@ export const StyleElement = styled.div`
     color: white;
     margin-left: 8%;
     margin-top: 30px;
+    margin-bottom: 114px;
   }
   & .facility {
     display: flex;
@@ -430,10 +428,37 @@ export const StyleElement = styled.div`
       border-radius: 8px;
       width: 100%;
     }
+    .slider2,
+    .slider1 {
+      background-image: none;
+      background-color: rgb(247, 248, 252);
+    }
+    .slider1 h1 {
+      width: 90%;
+      margin: 20px;
+    }
+    .batafsil-btn{
+    margin:10px;
+     width:90%
+    }
   }
   @media (max-width: 500px) {
     .card-item {
       min-width: calc(100% - 24px);
+    }
+    .slider1 {
+      margin: 0;
+      padding: 20px;
+    }
+    .slider1 h1 {
+      width: 100%;
+    }
+    .swiper-slide-prev h1 {
+      width: 100%;
+    }
+    .swiper-slide-prev {
+      margin: 0;
+      padding: 20px;
     }
   }
 `;
@@ -593,18 +618,23 @@ export default function Home() {
                     активному долголетию
                   </h1>
                   <Link href="/categories">
-                    <button className="batafsil-btn">{t("sliderbutton")}</button>
+                    <button className="batafsil-btn">
+                      {t("sliderbutton")}
+                    </button>
                   </Link>
                 </div>
               </SwiperSlide>
               <SwiperSlide>
                 <div className="slider1">
                   <h1>
-                    Ваш <span style={{ color: "#E93235" }}>первый шаг</span> к
+                    Ваш
+                    <span style={{ color: "#E93235" }}>первый шаг</span> к
                     активному долголетию
                   </h1>
                   <Link href="/categories">
-                    <button className="batafsil-btn">{t("button")}</button>
+                    <button className="batafsil-btn">
+                      {t("sliderbutton")}
+                    </button>
                   </Link>
                 </div>
               </SwiperSlide>
@@ -619,12 +649,8 @@ export default function Home() {
                   width={145}
                   height={145}
                 />
-                <h2>Широкий выбор ассортиментов</h2>
-                <p>
-                  Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру
-                  сгенерировать несколько абзацев более менее осмысленного
-                  текста рыбы на русском.
-                </p>
+                <h2>{t("facilityh2__1")}</h2>
+                <p>{t("facilityp")}</p>
               </div>
               <div className="facility-item col-12  col-md-6 col-lg-4">
                 <Image
@@ -633,12 +659,8 @@ export default function Home() {
                   width={145}
                   height={145}
                 />
-                <h2>Консультация с экспертами в аптеке</h2>
-                <p>
-                  Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру
-                  сгенерировать несколько абзацев более менее осмысленного
-                  текста рыбы на русском.
-                </p>
+                <h2>{t("facilityh2__2")}</h2>
+                <p>{t("facilityp")}</p>
               </div>
               <div className="facility-item col-12  col-md-6 col-lg-4">
                 <Image
@@ -647,17 +669,13 @@ export default function Home() {
                   width={145}
                   height={145}
                 />
-                <h2>Бронирование и доставка лекарств</h2>
-                <p>
-                  Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру
-                  сгенерировать несколько абзацев более менее осмысленного
-                  текста рыбы на русском.
-                </p>
+                <h2>{t("facilityh2__3")}</h2>
+                <p>{t("facilityp")}</p>
               </div>
             </div>
           </div>
-          <div className="container">
-            <h2>Maxsus takliflar</h2>
+          <div className="container" style={{ marginBottom: "30px" }}>
+            <h2>{t("vibr")}</h2>
             <div className="cards">
               {results.map(
                 ({ name, Country_of_origin, Manufacturer, id, slug }) => {
@@ -728,8 +746,8 @@ export default function Home() {
                             return id;
                           })
                           .includes(id)
-                          ? "Qo'shildi"
-                          : "Savatga qo'shish"}
+                          ? t("addbasket2")
+                          : t("addbasket")}
                       </button>
                       <i
                         style={{
@@ -812,14 +830,14 @@ export default function Home() {
           </div>
           <div className="container">
             <div className="action">
-              <h2>Sog‘lom tana sari harakatingizni bugundan boshlang!</h2>
+              <h2>{t("actiontitle")}</h2>
               <Link href="/categories">
-                <button>Maxsulotlarni ko'rish</button>
+                <button>{t("actionbutton")}</button>
               </Link>
             </div>
           </div>
           <div className="container">
-            <h2 style={{ margin: "40px 0px" }}>Ommabop kategoriyalar</h2>
+            <h2 style={{ margin: "40px 0px" }}>{t("Ommabop")}</h2>
             <div className="cards">
               {console.log("category", category)}
               {category.map(({ name }) => {
@@ -845,9 +863,7 @@ export default function Home() {
           </div>
           <div style={{ backgroundColor: "#F7F8FC", padding: "80px 0px" }}>
             <div className="container">
-              <h2 style={{ margin: "0px 0px 40px 0px" }}>
-                Mijozlarimizdan fikr-mulohazalar
-              </h2>
+              <h2 style={{ margin: "0px 0px 40px 0px" }}>{t("thought")}</h2>
               <Swiper
                 slidesPerView={1}
                 spaceBetween={30}
@@ -983,23 +999,19 @@ export default function Home() {
               }}
             >
               <div className="vakansiya">
-                <span style={{ letterSpacing: "5px" }}>
-                  — BO‘SH ISH O‘RINLARI
-                </span>
-                <p className="vakansiya-title">
-                  Bizning katta va ahil jamoamizga qo‘shilmoqchimisiz?
-                </p>
+                <span style={{ letterSpacing: "5px" }}>— {t("vakansiyi")}</span>
+                <p className="vakansiya-title">{t("vakansiyititle")}</p>
                 <div style={{ display: "flex" }}>
                   <div
                     className="vakansiya-number"
                     style={{ marginRight: "50px" }}
                   >
                     <p>{`>100`}</p>
-                    <span>Bo‘sh ish o‘rinlari</span>
+                    <span>{t("vakansiya__1")}</span>
                   </div>
                   <div className="vakansiya-number">
                     <p>{`>20`}</p>
-                    <span>Dorixona filiallari</span>
+                    <span>{t("vakansiya__1")}</span>
                   </div>
                 </div>
               </div>
@@ -1029,7 +1041,7 @@ export default function Home() {
                   className="contacts"
                   style={{ padding: "60px 40px", marginBottom: "10px" }}
                 >
-                  <h2>Biz bilan bog‘laning</h2>
+                  <h2>{t("contact__2")}</h2>
                   <div className="footer-contacts">
                     <a href="tel:+998998715668">
                       <Image
@@ -1119,8 +1131,7 @@ export default function Home() {
                           alignItems: "center",
                         }}
                       >
-                        Toshkent shahri, Olmazor tumani, Kichik halqa yo‘li
-                        ko‘chasi, 5-A
+                        {t('lokatsiya')}
                       </span>
                     </div>
                   </div>
@@ -1133,3 +1144,8 @@ export default function Home() {
     </div>
   );
 }
+export const getStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});

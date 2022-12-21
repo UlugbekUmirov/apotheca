@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Loading from "../../layout/Loading";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 const StyleElemenеntslug = styled.div`
   & .btn {
@@ -56,8 +58,20 @@ const StyleElemenеntslug = styled.div`
     transition: all 0.3s ease 0s;
     background: white;
   }
+  .h5{
+    font-size: 32px;
+  }
+  @media (max-width: 1100px) {
+    .card-item {
+      display: block;
+    }
+    .h5{
+      font-size: 25px;
+    }
+  }
 `;
 export default function Detailes() {
+  const { t } = useTranslation("common", { keyPrefix: "id" });
   const [result, setResult] = useState({});
   const [basket, setBakset] = useState([]);
   const [likee, setLikee] = useState([]);
@@ -164,20 +178,20 @@ export default function Detailes() {
   return (
     <div>
       <Head>
-        <title>Internet dorixona - Apotheca</title>
+        <title>{t("title")}-Apotheca</title>
       </Head>
       <div className="container">
         <div className="content">
           {step === 0 ? (
             <>
-             <Loading/>
+              <Loading />
             </>
           ) : (
             <>
               <div>
                 <div style={{ margin: "30px 0px" }}>
                   <span>
-                    <Link href="/">Asosiy sahifa</Link>
+                    <Link href="/">{t("home")}</Link>
                   </span>
                   <span>{` > `}</span>
                   <span>
@@ -232,9 +246,10 @@ export default function Detailes() {
                     />
                     <div>
                       <h5
-                        style={{ fontSize: "32px", width: "calc(100%-100px)" }}
+                      className="h5"
+                        style={{ width: "calc(100%-100px)" }}
                       >
-                        {result?.name ?? "noma'lum"}
+                        {result?.name ?? t("nomalum")}
                       </h5>
                       <h5>
                         <span
@@ -244,10 +259,10 @@ export default function Detailes() {
                             fontSize: "16px",
                           }}
                         >
-                          Ishlab chiqaruvchi:{" "}
+                          {t("madeIn")}:
                         </span>
                         <span style={{ fontSize: "16px", fontWeight: "500" }}>
-                          {result?.Manufacturer?.name ?? "noma'lum"}
+                          {result?.Manufacturer?.name ?? t("nomalum")}
                         </span>
                       </h5>
                       <h5>
@@ -258,7 +273,7 @@ export default function Detailes() {
                             fontSize: "16px",
                           }}
                         >
-                          Ishlab chiqaruvchi davlat :{" "}
+                          {t("counter")} :
                         </span>
                         <span style={{ fontSize: "16px", fontWeight: "500" }}>
                           {" "}
@@ -273,10 +288,10 @@ export default function Detailes() {
                             fontSize: "16px",
                           }}
                         >
-                          Dori shakli :{" "}
+                          {t("shakli")} :
                         </span>
                         <span style={{ fontSize: "16px", fontWeight: "500" }}>
-                          {result?.Release_form?.name ?? "noma'lum"}
+                          {result?.Release_form?.name ?? t("nomalum")}
                         </span>
                       </h5>
                       <h5>
@@ -287,10 +302,10 @@ export default function Detailes() {
                             fontSize: "16px",
                           }}
                         >
-                          Ta'sir etuvchi modda :{" "}
+                          {t("modda")} :
                         </span>
                         <span style={{ fontSize: "16px", fontWeight: "500" }}>
-                          {result?.Active_substance ?? "noma'lum"}
+                          {result?.Active_substance ?? t("nomalum")}
                         </span>
                       </h5>
                       <h5>
@@ -301,7 +316,7 @@ export default function Detailes() {
                             fontSize: "16px",
                           }}
                         >
-                          Qutidagi miqdori :{" "}
+                          {t("soni")}:
                         </span>
                         <span style={{ fontSize: "16px", fontWeight: "500" }}>
                           {result?.Amount_in_package ?? "0"}
@@ -315,11 +330,11 @@ export default function Detailes() {
                             fontSize: "16px",
                           }}
                         >
-                          Farmaseftik kompaniya :{" "}
+                          {t("company")} :
                         </span>
                         <span style={{ fontSize: "16px", fontWeight: "500" }}>
                           {result?.pharmacotherapeutic_group?.name ??
-                            "noma'lum"}
+                            t("nomalum")}
                         </span>
                       </h5>
                       <button
@@ -353,13 +368,13 @@ export default function Detailes() {
                             return id;
                           })
                           .includes(result?.id ?? "0")
-                          ? "Qo'shildi"
-                          : "Savatga qo'shish"}
+                          ? t("addbasket2")
+                          : t("addbasket")}
                       </button>
                     </div>
                   </div>
                   <div>
-                    <h3>Umumiy ma'lumotlar</h3>
+                    <h3>{t("Umumiy")}</h3>
                     {property.map((item) => {
                       return (
                         <>
@@ -386,3 +401,14 @@ export default function Detailes() {
     </div>
   );
 }
+export const getStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
+export const getStaticPaths = async () => {
+  return {
+    paths: ["/categories/id"],
+    fallback: true,
+  };
+};

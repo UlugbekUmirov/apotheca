@@ -16,7 +16,7 @@ const StyledElement = styled.section`
       height: 100vh;
     }
     & h3 {
-      color: #5762f7;
+      color: red;
       font-size: 44px;
       font-weight: 700;
       margin: 0;
@@ -26,7 +26,7 @@ const StyledElement = styled.section`
       }
     }
     & p {
-      color: #303030;
+      color: #061b34;
       font-size: 16px;
       font-weight: 500;
       margin: 20px 0 30px 0;
@@ -36,7 +36,7 @@ const StyledElement = styled.section`
       width: 250px;
       & a {
         align-items: center;
-        background-color: #5762f7;
+        background-color: #061b34;
         border-radius: 8px;
         color: #ffffff;
         display: flex;
@@ -61,9 +61,12 @@ const NotFound = () => {
   }, []);
   return (
     <>
+      <Head>
+        <title>{t("title")}-Apotheca</title>
+      </Head>
       <StyledElement>
-        <div className="container">
-          <h3>{t("title")}</h3>
+        <div className="container content">
+          <h3>{t("titlee")}</h3>
           <p>{t("not-found-or-deleted")}</p>
           <div>
             <Link href="/">{t("home")}</Link>
