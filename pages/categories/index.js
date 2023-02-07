@@ -5,6 +5,8 @@ import Image from "next/image";
 import styled from "styled-components";
 import { StyleElement } from "..";
 import Head from "next/head";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "react-i18next";
 import Link from "next/link";
 const Categories = styled.div`
   & .accordion {
@@ -166,6 +168,7 @@ const Categories = styled.div`
   }
 `;
 function BasicExample() {
+  const { t } = useTranslation("common", { keyPrefix: "catalog" });
   const [category, setCategory] = useState([]);
   const [categoriesresult, setCategoriesresult] = useState([]);
   const [likee, setlike] = useState([]);
@@ -263,18 +266,18 @@ function BasicExample() {
   const className = scrol ? "right-categories__scroll " : " right-categories ";
   return (
     <div className="content container">
-      <Head>
-        <title>Internet dorixona - Apotheca</title>
+    <Head>
+        <title>{t("title")}-Apotheca</title>
       </Head>
       <div style={{ margin: "30px 0px" }}>
         <span>
-          <Link href="/">Asosiy sahifa</Link>
+          <Link href="/">{t("home")}</Link>
         </span>{" "}
         <span style={{ color: "#738DA3" }}>{` > `}</span>
-        <span style={{ color: "#738DA3" }}>Mahsulotlar katalogi</span>
+        <span style={{ color: "#738DA3" }}>{t('catalog')}</span>
       </div>
       <div style={{ margin: "30px 0", fontSize: "32px", fontWeight: "500" }}>
-        Mahsulotlar katalogi
+      {t('catalog')}
       </div>
       <Categories>
         <div className="categoryyyy">
@@ -289,7 +292,7 @@ function BasicExample() {
                 }}
               >
                 <span style={{ fontWeight: "500", fontSize: "16px" }}>
-                  Saralash
+                  {t('filter')}
                 </span>
                 <span
                   style={{
@@ -299,12 +302,12 @@ function BasicExample() {
                     cursor: "pointer",
                   }}
                 >
-                  Saralashni tozalash
+                  {t('filterclear')}
                 </span>
               </div>
               <hr style={{ color: "#738DA3" }} />
               <span style={{ padding: "0px 16px", fontWeight: "500" }}>
-                Maxsulot katalogi
+                {t('catalog')}
               </span>
               {category.map(({ name, id, childs }) => {
                 return (
@@ -412,8 +415,8 @@ function BasicExample() {
                             return id;
                           })
                           .includes(id)
-                          ? "Qo'shildi"
-                          : "Savatga qo'shish"}
+                          ? (t('addbasket2'))
+                          : t('addbasket')}
                       </button>
                       <i
                         style={{ fontSize: "20px" }}
@@ -441,3 +444,8 @@ function BasicExample() {
 }
 
 export default BasicExample;
+export const getStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});

@@ -69,7 +69,7 @@ const StyledElement = styled.div`
   }
 `;
 const Down = () => (
-  <svg fill="none" height="10" viewBox="0 0 12 8" width="16">
+  <svg fill="none" height="7" viewBox="0 0 12 8" width="11">
     <path
       d="M1 1.5L6 6.5L11 1.5"
       stroke="#2C3E50"
@@ -79,52 +79,7 @@ const Down = () => (
     />
   </svg>
 );
-const Globe = () => (
-  <svg fill="none" height="24" viewBox="0 0 24 24" width="24">
-    <g clipPath="url(#clip0_63_1210)">
-      <path
-        d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
-        stroke="#2C3E50"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M3.59961 9H20.3996"
-        stroke="#2C3E50"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M3.59961 15H20.3996"
-        stroke="#2C3E50"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M11.4997 3C9.81501 5.69961 8.92188 8.81787 8.92188 12C8.92188 15.1821 9.81501 18.3004 11.4997 21"
-        stroke="#2C3E50"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M12.5 3C14.1847 5.69961 15.0778 8.81787 15.0778 12C15.0778 15.1821 14.1847 18.3004 12.5 21"
-        stroke="#2C3E50"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </g>
-    <defs>
-      <clipPath id="clip0_63_1210">
-        <rect width="24" height="24" fill="white" />
-      </clipPath>
-    </defs>
-  </svg>
-);
+
 export default function Language() {
   const ref = useRef(null);
   const router = useRouter();
@@ -135,7 +90,6 @@ export default function Language() {
     localStorage.setItem("lan", locale);
     setActive(!active);
     router.push(asPath, asPath, { locale });
-    
   };
   const [active, setActive] = useState(false);
   useEffect(() => {
@@ -147,18 +101,42 @@ export default function Language() {
       window.removeEventListener("click", onClick);
     };
   }, [active, ref]);
+
   return (
     <StyledElement isActive={active}>
-      <button
+      <div
         onClick={(e) => {
           e.stopPropagation();
           setActive(!active);
         }}
+        style={{ cursor: "pointer" }}
       >
-        <Globe />
-        <span>{language === "ru" ? "RU" : language === "uz" ? "UZ" : ""}</span>
+        {language === "ru" ? (
+          <img
+            src="https://apotheca.uz/static/images/russian-flag.svg"
+            width={18}
+            height={18}
+            style={{ marginRight: "5px" }}
+          />
+        ) : language === "uz" ? (
+          <img
+            src="https://apotheca.uz/static/images/uzbekistan-flag.svg"
+            width={18}
+            height={18}
+            style={{ marginRight: "5px" }}
+          />
+        ) : (
+          ""
+        )}
+        <span style={{ marginRight: "5px" }}>
+          {language === "ru"
+            ? "Русский"
+            : language === "uz"
+            ? "O'zbek tili"
+            : ""}
+        </span>
         <Down />
-      </button>
+      </div>
       <ul ref={ref}>
         <li
           data-active={language === "uz" ? "active" : "inactive"}
@@ -167,9 +145,15 @@ export default function Language() {
             changeLanguage("uz");
           }}
         >
-          <p>
-            <span>UZ</span>
-          </p>
+          <>
+            <img
+              src="https://apotheca.uz/static/images/uzbekistan-flag.svg"
+              width={18}
+              height={18}
+              style={{ marginRight: "5px" }}
+            />
+            <span style={{ fontSize: "12px" }}>O'zbek tili</span>
+          </>
         </li>
         <li
           data-active={language === "ru" ? "active" : "inactive"}
@@ -178,9 +162,15 @@ export default function Language() {
             changeLanguage("ru");
           }}
         >
-          <p>
-            <span>RU</span>
-          </p>
+          <>
+            <img
+              src="https://apotheca.uz/static/images/russian-flag.svg"
+              width={18}
+              height={18}
+              style={{ marginRight: "5px" }}
+            />
+            <span style={{ fontSize: "15px" }}>Русский</span>
+          </>
         </li>
       </ul>
     </StyledElement>

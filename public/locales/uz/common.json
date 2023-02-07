@@ -1,8 +1,106 @@
 {
   "header": {
-   "contact":"Qayta bog'lanish"
-   },
-   "home":{
-   "sliderbutton":"dddd"
+    "contact": "Qayta bog'lanish",
+    "catalog": "Maxsulot katalogi",
+    "favorites": "Sevimlilar",
+    "baskets": "Savat",
+    "placeholder": "Dori nomini kiriting...",
+    "name": "Ism",
+    "phone": "Telefon raqam",
+    "button": "Yuborish",
+    "contacttitle": "Ism va telefon raqamingizni kiriting"
+  },
+  "home": {
+    "sliderbutton": "Ko'proq",
+    "slidertitle": "Sizning birinchi qadamingiz faol uzoq umr ko'rish uchun",
+    "facilityh2__1": "Keng tanlov",
+    "facilityh2__2": "Mutaxassislar bilan konsultatsiya",
+    "facilityh2__3": "Yetkazib berish va band qilish",
+    "facilityp": "Dorixonalarimizda barcha turdagi farmasevtik, parafarmasevtik mahsulotlarni topishingiz mumkin.",
+    "vibr": "Maxsus takliflar",
+    "addbasket": "Savatga qo'shish",
+    "addbasket2": "Qo'shildi",
+    "actiontitle": "Sog‘lom tana sari harakatingizni bugundan boshlang!",
+    "actionbutton": "mahsulotlarni ko'rish",
+    "Ommabop": "Ommabop kategoriyalar",
+    "thought": "Mijozlarimizdan fikr-mulohazalar",
+    "vakansiyi": "BO‘SH ISH O‘RINLARI",
+    "vakansiyititle": "Bizning katta va ahil jamoamizga qo‘shilmoqchimisiz?",
+    "vakansiya__1": "Bo‘sh ish o‘rinlari",
+    "vakansiya__2": "Dorixona filiallari",
+    "contact__2": "Biz bilan bog‘laning",
+    "lokatsiya": "Toshkent shahri, Olmazor tumani, Kichik halqa yo‘li ko‘chasi, 5-A",
+    "title":"Internet dorixona"
+  },
+  "footer": {
+    "abouttitle": "Kompaniya haqida",
+    "aboutp1": "Kompaniya haqida",
+    "aboutp2": "Xaridorlar fikrlari",
+    "aboutp3": "Sayt xaritasi",
+    "catalogTitle": "Mahsulotlar katalogi",
+    "kategoriyatitle": "Гомеопатия",
+    "kategoriyap1": "Антибиотики",
+    "kategoriyap2": "Глазные капли",
+    "kategoriyap3": "Молокоотсосы",
+    "kontakttitle": "Aloqa",
+    "kontaktp1": "Toshkent shahri, Olmazor tumani, Kichik halqa yo‘li ko‘chasi, 5-A",
+    "huquq":" Barcha huquqlar himoyalangan."
+  },
+  "favorites": {
+    "home": "Asosiy sahifa",
+    "favorites": "Sevimli maxsulotlar",
+    "addbasket": "Savatga qo'shish",
+    "addbasket2": "Qo'shildi",
+    "pustoy": "Sevimli mahsulotlarga hozircha hech narsa qo‘shilmagan",
+    "pustoytitle": "Mahsulotlar katalogi orqali sevimli mahsulotlaringizni qo‘shing",
+    "pustoybutton": "Katalogga o'tish",
+    "title":"Internet dorixona"
+  },
+  "baskets": {
+    "home": "Asosiy sahifa",
+     "baskets":"Savat",
+    "tavsilot": "Buyurtma tafsilotlari",
+    "allmoney": "Umumiy narxi",
+    "Soni": "Soni(dona)",
+    "dastavka": "Yetkazib berish xizmati",
+    "miqdori": "To‘lov miqdori",
+    "narx__buyicha": "Narx so'rov bo'yicha",
+    "button": "Buyurtma berish",
+    "ta": "ta",
+    "som":"so'm",
+    "pustoy": "Savat bo'sh",
+    "pustoytitle": "O‘zingizga kerakli mahsulotlarni katalogdan yoki izlash xizmati orqali toping",
+    "pustoybutton": "Katalog",
+    "title":"Internet dorixona"
+  },
+  "catalog": {
+    "home": "Asosiy sahifa",
+    "catalog": "Mahsulotlar katalogi",
+    "filter": "Saralash",
+    "filterclear": "Saralashni tozalash",
+    "addbasket": "Savatga qo'shish",
+    "addbasket2": "Qo'shildi",
+    "title":"Internet dorixona"
+  },
+  "id":{
+    "home": "Asosiy sahifa",
+    "catalog": "Mahsulotlar katalogi",
+    "madeIn":"Ishlab chiqaruvchi",
+    "counter":"Ishlab chiqaruvchi davlat",
+    "shakli":"Dori shakli",
+    "modda":"Ta'sir etuvchi modda",
+    "soni":"Qutidagi miqdori",
+    "company":"Farmaseftik kompaniya",
+    "addbasket": "Savatga qo'shish",
+    "addbasket2": "Qo'shildi",
+    "Umumiy":"Umumiy ma'lumotlar",
+    "nomalum":"no'malum",
+    "title":"Internet dorixona"
+  },
+  "not-found":{
+    "titlee":"Sahifa topilmadi!",
+    "not-found-or-deleted":"Siz izlayotgan sahifa o‘chirilgan yoki mavjud bo‘lmagan.",
+    "home":"Asosiy sahifa" ,
+    "title":"Internet dorixona"
   }
 }

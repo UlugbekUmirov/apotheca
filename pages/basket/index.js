@@ -4,15 +4,20 @@ import Image from "next/image";
 import Head from "next/head";
 import styled from "styled-components";
 import { StyleElement } from "../index";
+import Loading from "../../layout/Loading";
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 export default function Basket() {
-  const {locale} = useRouter()
+  const { locale } = useRouter();
+  const { t } = useTranslation("common", { keyPrefix: "baskets" });
   const { baskets } = useSelector((state) => state.like);
   const dispatch = useDispatch();
   const [basket, setBakset] = useState([]);
   const [basketss, setBaksetss] = useState([]);
+  const [qadam, setQadam] = useState(0);
   useEffect(() => {
     let sbaskets = localStorage.getItem("sbaskets");
     sbaskets = JSON.parse(sbaskets?.length ? sbaskets : "[]");
@@ -28,6 +33,9 @@ export default function Basket() {
         const data = response?.data;
         const basket = Array.isArray(data) ? data : [];
         setBakset(basket);
+        if(data.length !== 0 ){
+        setQadam(1)
+        }
       });
   }, []);
 
@@ -133,21 +141,25 @@ export default function Basket() {
       }
     }
   `;
+
   return (
     <div>
-      <Head>
-        <title>Internet dorixona - Apotheca </title>
+     <Head>
+        <title>{t("title")}-Apotheca</title>
       </Head>
       <div className="content container">
+        {qadam === 0 ? <>
+        <Loading/>
+        </>:<>
         <div style={{ margin: "30px 0px" }}>
           <span>
-            <Link href="/">Asosiy sahifa</Link>
+            <Link href="/">{t("home")}</Link>
           </span>{" "}
           <span style={{ color: "#738DA3" }}>{` > `}</span>
-          <span style={{ color: "#738DA3" }}>Savat</span>
+          <span style={{ color: "#738DA3" }}>{t("baskets")}</span>
         </div>
         <div style={{ margin: "30px 0", fontSize: "32px", fontWeight: "500" }}>
-          Savat
+          {t("baskets")}
         </div>
         {basketss.length === 0 ? (
           <>
@@ -159,7 +171,7 @@ export default function Basket() {
               <h3
                 style={{ fontWeight: "500", fontSize: "24px", margin: "1rem" }}
               >
-                Savat bo'sh
+                {t("pustoy")}
               </h3>
               <p
                 style={{
@@ -168,8 +180,7 @@ export default function Basket() {
                   color: "#6f818f",
                 }}
               >
-                O‘zingizga kerakli mahsulotlarni katalogdan yoki izlash xizmati
-                orqali toping
+                {t("pustoytitle")}
               </p>
               <Link href="/categories">
                 <button
@@ -184,7 +195,7 @@ export default function Basket() {
                     lineHeight: "19px",
                   }}
                 >
-                  Katalog
+                  {t("pustoybutton")}
                 </button>
               </Link>
             </div>
@@ -266,7 +277,7 @@ export default function Basket() {
                                   <h4 style={{ marginRight: "16px" }}>
                                     <span style={{ fontSize: "18px" }}>
                                       {productCount(id)}
-                                      ta
+                                      {t("ta")}
                                     </span>
                                   </h4>
                                   <button
@@ -328,7 +339,8 @@ export default function Basket() {
                     height: "324px",
                   }}
                 >
-                  <h3>Buyurtma tafsilotlari</h3>
+                  <h3>{t("tavsilot")}</h3>
+
                   <h4
                     style={{
                       display: "flex",
@@ -343,7 +355,7 @@ export default function Basket() {
                         fontWeight: "400",
                       }}
                     >
-                      Umumiy narxi
+                      Soni(dona)
                     </span>
                     <span
                       style={{
@@ -372,7 +384,7 @@ export default function Basket() {
                         fontWeight: "400",
                       }}
                     >
-                      Soni(dona)
+                      {t("allmoney")}
                     </span>
                     <span
                       style={{
@@ -381,7 +393,11 @@ export default function Basket() {
                         color: "#143650",
                       }}
                     >
-                      Narx so'rov bo'yicha{" "}
+                      {baskets.map((item) => {
+                        let sum = 0;
+                        return <>{console.log("item", item.count)}</>;
+                      })}
+                      {t("narx__buyicha")}
                     </span>
                   </h4>
                   <h4
@@ -398,7 +414,7 @@ export default function Basket() {
                         fontWeight: "400",
                       }}
                     >
-                      Yetkazib berish xizmati{" "}
+                      {t("dastavka")}
                     </span>
                     <span
                       style={{
@@ -407,7 +423,7 @@ export default function Basket() {
                         color: "#143650",
                       }}
                     >
-                      0 so'm
+                      0 {t("som")}
                     </span>
                   </h4>
                   <h4
@@ -424,7 +440,7 @@ export default function Basket() {
                         fontWeight: "400",
                       }}
                     >
-                      To‘lov miqdori:
+                      {t("miqdori")}:
                     </span>
                     <span
                       style={{
@@ -433,7 +449,7 @@ export default function Basket() {
                         color: "#061b34",
                       }}
                     >
-                      Narx so'rov bo'yicha
+                      {t("narx__buyicha")}
                     </span>
                   </h4>
                   <button
@@ -446,14 +462,21 @@ export default function Basket() {
                       borderRadius: "8px",
                     }}
                   >
-                    Buyurtma berish
+                    {t("button")}
                   </button>
                 </div>
               </div>
             </StyleElement>
           </div>
         )}
+        
+        </>}
       </div>
     </div>
   );
 }
+export const getStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});

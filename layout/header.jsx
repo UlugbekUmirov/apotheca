@@ -448,9 +448,7 @@ const Header = (props) => {
   const handleSearch = () => {
     setSrch(1);
   };
-  /*  document.addEventListener("click", () => {
-    setSrch(0);
-  }); */
+  
   const className2 = scroll
     ? "navbarscrolltrue    bg-white"
     : "navbarscrollfalse   bg-white ";
@@ -489,12 +487,12 @@ const Header = (props) => {
                 <Modal show={show} onHide={handleClose}>
                   <Modal.Header closeButton></Modal.Header>
                   <Modal.Body style={{ textAlign: "center" }}>
-                    <h3>Qayta bo'g'laish</h3>
+                    <h3>{t("contact")}</h3>
                     <p style={{ color: "#6f818f" }}>
-                      Ism va telefon raqamingizni kiriting
+                      {t("contacttitle")}
                     </p>
                     <div>
-                      <div style={{ color: "#6f818f" }}>Ism</div>
+                      <div style={{ color: "#6f818f" }}>{t('name')}</div>
                       <input
                         type="text"
                         onChange={(e) => {
@@ -514,7 +512,7 @@ const Header = (props) => {
                       />
                     </div>
                     <div>
-                      <div style={{ color: "#6f818f" }}>Telefon raqam</div>
+                      <div style={{ color: "#6f818f" }}>{t("phone")}</div>
                       <InputMask
                         className="InputMask"
                         formatChars={{ b: "[0-9]" }}
@@ -554,7 +552,7 @@ const Header = (props) => {
                         marginBottom: "10px",
                       }}
                     >
-                      Yuborish
+                      {t("button")}
                     </button>
                     {networkError && (
                       <p style={{ color: "red" }}>Nimadir xato</p>
@@ -610,7 +608,7 @@ const Header = (props) => {
                     style={{ color: "white", marginLeft: "5px" }}
                     className="catalogtext"
                   >
-                    Maxsulot katalogi
+                    {t("catalog")}
                   </span>
                 </button>
                 {step3 === true ? (
@@ -685,7 +683,7 @@ const Header = (props) => {
                 <form className="form1">
                   <DatalistInput
                     type="text"
-                    placeholder="Dori nomini kiriting..."
+                    placeholder={t('placeholder')}
                     className="search-input"
                     onSelect={({ slug }) => {
                       window.location.href = "/categories/" + slug;
@@ -788,7 +786,7 @@ const Header = (props) => {
                       )}
                     </div>
                   </span>
-                  <span className="bag-title">Sevimlilar</span>
+                  <span className="bag-title">{t("favorites")}</span>
                 </Link>
                 <Link href="/basket" locale={locale}>
                   <span style={{ display: "flex", position: "relative" }}>
@@ -822,7 +820,7 @@ const Header = (props) => {
                         </span>
                       )}
                     </div>
-                    <span className="bag-title">Savat</span>
+                    <span className="bag-title">{t("baskets")}</span>
                   </span>
                 </Link>
               </div>
