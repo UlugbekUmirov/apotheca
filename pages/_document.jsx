@@ -71,11 +71,6 @@ export default class MyDocument extends Document {
             integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
             crossorigin="anonymous"
           ></link>
-<<<<<<< HEAD
-          
-=======
-
->>>>>>> c85193d55a781a6f11a386e0f6f95054b0b37f1d
           <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"

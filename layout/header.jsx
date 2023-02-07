@@ -11,232 +11,227 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import Language from "./Language";
 export const Navbar = styled.div`
-& nav {
-  padding: 24px 0px;
-  display: flex;
-  justify-content: space-between;
-  align-item: center;
-  height:100px;
-}
-& .nav-right {
-  align-items: center;
-  display: flex;
-}
-& a{
- text-decoration: none;
- color:black;
- font-size:18px
-}
-& .calling{
- display:none;
-
-}
-& .nav-right button{
-  margin:0px 24px;
-  border-radius:8px;
-  padding: 12px 14px;
-  border:1px solid #061b34;
-  background-color:white;
-}
-& .navbarscrolltrue{
-  top: -100px; 
-  position: fixed;
-  transition: all 0.5s ease-in-out 0s;
-  width: 100%;
-  z-index: 4;
-}
-& .navbarscrollfalse{
-  position: fixed;
-  border-bottom: none;
-  top: 0px;
-  transition: all 0.5s ease-in-out 0s;
-  width: 100%;
-  z-index: 4;
- 
-}
- & .dropdown-toggle::after {
-  border:0;
-}
-& #button{
-  background-color: #061B34;
-  font-size:15px;
-  font-weight:500;
-  padding:10px ;
-  display:flex;
-  align-items:center;
-
-}
-& .dropdown-toggle::before{
-  background-image:url('/Group 10092.svg') 
-  content:''
-}
-& .search-input2{
-  border:none;
-  padding:10px 0px 10px 24px;
-  outline:none;
-  width:100%;
-  border-radius:8px;
-}
-
-& .search-input2::placeholder {
-  color:black;
-  font-weight:500;
-
-  color:#061B34;
-}
-& .search-input{
- border:none;
- padding:10px 0px 10px 24px;
- outline:none;
- width:100%;
- border-radius:8px;
-}
-& .search-btn{
-  align-items:center;
-}
-& .search-input::placeholder {
-  color:black;
-  font-weight:500;
-  color:#061B34;
-}
-& .search-btn{
-  background-color:white;
-  border:none;
-  padding-right: 25px;
-  border-radius:8px;
-}
-& form{
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  margin:0px 24px;
-  background-color:white;
-  border-radius:8px;
-  transition: all 0.5s ease-in-out 0s;
-}
- & .bag-icons  {
- padding:10px;
- background-color:#143650;
- display:flex;
- align-items:center;
- border-radius:50%;
- margin:2px 0px;
- margin-right:16px;
- 
-}
-& .bag-title{
- display:flex;
- align-items:center;
- margin-right:24px;
-}
-& .search-btn__after{
-  margin:0px 8px;
-  display:none;
-  text-align: end;
-  width:100%
-}
-& Navbar{
-  transition: all 0.5s ease-in-out 0s;
-}
-& .scrollimgtrue{
-  height: 0px;
-  margin: 0px;
-  transform-origin: left center;
-  transition-timing-function: ease-in-out;
-  min-width: 0px !important;
-  width: 0px !important;
-}
-& .scrollimgfalse{
-  height: 52px;
-  margin: 0px 24px 0px 0px;
-  transform-origin: left center;
-  transition-timing-function: ease-in-out;
-  min-width: 56px !important;
-  width: 56px !important;
-}
-& .trans5{
-  transition: .5s;
-}
-& .navbarbottom{
-  background: #F7F8FC;
-  padding:14px 0px;
-}
-& .react-datalist-input__textbox {
-  border:1px solid white;
-  outline:white solid 1px;
-}
-& .favoritescount{
-  -webkit-box-align: center;
-  align-items: center;
-  border-radius: 50%;
-  border: 2px solid rgb(255, 255, 255)!important;
-  bottom: -4px;
-  display: flex;
-  -webkit-box-pack: center;
-  justify-content: center;
-  max-height: 20px;
-  min-width: 20px;
-  padding: 3px;
-  position: absolute;
-  font-size:11px;
-  font-weight:500;
-  left:20px;
-  background-color:red;
-  color:white;
-}
-.dropdownbtn {
-  display: inline-block; 
-}
-.dropdownbtn{
-  -webkit-box-align: center;
-  align-items: center;
-  border-radius: 8px;
-  display: flex;
-  height: 51px;
-  margin: 0px;
-  padding: 0px 24px;
-  transition: box-shadow 0.4s ease 0s;
-  white-space: nowrap;
-}
-
-@media(max-width:992px){
-  .bag-title{
-    display:none;
-  } 
-  .katalog-title{
-   display:none;
-   margin: 0px 0px -2px;
-  } 
-   .catalogtext{
-   display:none;
+  & nav {
+    padding: 24px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
   }
-  .dropdownbtn{
-   padding:10px;
-   height:45px;
+  & .nav-right {
+    align-items: center;
+    display: flex;
   }
-}
+  & a {
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+  }
+  & .calling {
+    display: none;
+  }
+  & .nav-right button {
+    margin: 0px 24px;
+    border-radius: 8px;
+    padding: 12px 14px;
+    border: 1px solid #061b34;
+    background-color: white;
+  }
+  & .navbarscrolltrue {
+    top: -100px;
+    position: fixed;
+    transition: all 0.5s ease-in-out 0s;
+    width: 100%;
+    z-index: 4;
+  }
+  & .navbarscrollfalse {
+    position: fixed;
+    border-bottom: none;
+    top: 0px;
+    transition: all 0.5s ease-in-out 0s;
+    width: 100%;
+    z-index: 4;
+  }
+  & .dropdown-toggle::after {
+    border: 0;
+  }
+  & #button {
+    background-color: #061b34;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+  }
+  & .dropdown-toggle::before {
+    background-image: url("/Group 10092.svg");
+    content: "";
+  }
+  & .search-input2 {
+    border: none;
+    padding: 10px 0px 10px 24px;
+    outline: none;
+    width: 100%;
+    border-radius: 8px;
+  }
 
-@media (max-width: 768px){
-   .nav-right a{
-      display:none;
+  & .search-input2::placeholder {
+    color: black;
+    font-weight: 500;
+
+    color: #061b34;
+  }
+  & .search-input {
+    border: none;
+    padding: 10px 0px 10px 24px;
+    outline: none;
+    width: 100%;
+    border-radius: 8px;
+  }
+  & .search-btn {
+    align-items: center;
+  }
+  & .search-input::placeholder {
+    color: black;
+    font-weight: 500;
+    color: #061b34;
+  }
+  & .search-btn {
+    background-color: white;
+    border: none;
+    padding-right: 25px;
+    border-radius: 8px;
+  }
+  & form {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 24px;
+    background-color: white;
+    border-radius: 8px;
+    transition: all 0.5s ease-in-out 0s;
+  }
+  & .bag-icons {
+    padding: 10px;
+    background-color: #143650;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    margin: 2px 0px;
+    margin-right: 16px;
+  }
+  & .bag-title {
+    display: flex;
+    align-items: center;
+    margin-right: 24px;
+  }
+  & .search-btn__after {
+    margin: 0px 8px;
+    display: none;
+    text-align: end;
+    width: 100%;
+  }
+  & Navbar {
+    transition: all 0.5s ease-in-out 0s;
+  }
+  & .scrollimgtrue {
+    height: 0px;
+    margin: 0px;
+    transform-origin: left center;
+    transition-timing-function: ease-in-out;
+    min-width: 0px !important;
+    width: 0px !important;
+  }
+  & .scrollimgfalse {
+    height: 52px;
+    margin: 0px 24px 0px 0px;
+    transform-origin: left center;
+    transition-timing-function: ease-in-out;
+    min-width: 56px !important;
+    width: 56px !important;
+  }
+  & .trans5 {
+    transition: 0.5s;
+  }
+  & .navbarbottom {
+    background: #f7f8fc;
+    padding: 14px 0px;
+  }
+  & .react-datalist-input__textbox {
+    border: 1px solid white;
+    outline: white solid 1px;
+  }
+  & .favoritescount {
+    -webkit-box-align: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 2px solid rgb(255, 255, 255) !important;
+    bottom: -4px;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    max-height: 20px;
+    min-width: 20px;
+    padding: 3px;
+    position: absolute;
+    font-size: 11px;
+    font-weight: 500;
+    left: 20px;
+    background-color: red;
+    color: white;
+  }
+  .dropdownbtn {
+    display: inline-block;
+  }
+  .dropdownbtn {
+    -webkit-box-align: center;
+    align-items: center;
+    border-radius: 8px;
+    display: flex;
+    height: 51px;
+    margin: 0px;
+    padding: 0px 24px;
+    transition: box-shadow 0.4s ease 0s;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 992px) {
+    .bag-title {
+      display: none;
     }
-}
-@media(max-width:576px){
-  .nav-right button {
-    display:none;
+    .katalog-title {
+      display: none;
+      margin: 0px 0px -2px;
+    }
+    .catalogtext {
+      display: none;
+    }
+    .dropdownbtn {
+      padding: 10px;
+      height: 45px;
+    }
   }
-  .calling{
-   display:block;
-   margin:0px 15px;
-  }
-  & .search-btn__after{
-  display:block;
-  }
-  & .form1{
-   display:none;
-  }
-}
 
+  @media (max-width: 768px) {
+    .nav-right a {
+      display: none;
+    }
+  }
+  @media (max-width: 576px) {
+    .nav-right button {
+      display: none;
+    }
+    .calling {
+      display: block;
+      margin: 0px 15px;
+    }
+    & .search-btn__after {
+      display: block;
+    }
+    & .form1 {
+      display: none;
+    }
+  }
 `;
 const defaultOptions = {
   isMulti: false,
@@ -448,7 +443,7 @@ const Header = (props) => {
   const handleSearch = () => {
     setSrch(1);
   };
-  
+
   const className2 = scroll
     ? "navbarscrolltrue    bg-white"
     : "navbarscrollfalse   bg-white ";
@@ -488,11 +483,9 @@ const Header = (props) => {
                   <Modal.Header closeButton></Modal.Header>
                   <Modal.Body style={{ textAlign: "center" }}>
                     <h3>{t("contact")}</h3>
-                    <p style={{ color: "#6f818f" }}>
-                      {t("contacttitle")}
-                    </p>
+                    <p style={{ color: "#6f818f" }}>{t("contacttitle")}</p>
                     <div>
-                      <div style={{ color: "#6f818f" }}>{t('name')}</div>
+                      <div style={{ color: "#6f818f" }}>{t("name")}</div>
                       <input
                         type="text"
                         onChange={(e) => {
@@ -683,7 +676,7 @@ const Header = (props) => {
                 <form className="form1">
                   <DatalistInput
                     type="text"
-                    placeholder={t('placeholder')}
+                    placeholder={t("placeholder")}
                     className="search-input"
                     onSelect={({ slug }) => {
                       window.location.href = "/categories/" + slug;

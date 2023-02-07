@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { get } from "lodash";
 import { Swiper, SwiperSlide } from "swiper/react";
 import React, { useEffect, useState } from "react";
 import { FreeMode, Navigation, Thumbs, Pagination, Autoplay } from "swiper";
@@ -107,14 +108,13 @@ export const StyleElement = styled.div`
       url("/slider 1.png");
     background-position: right center;
     background-repeat: no-repeat;
-    positsion: relative;
+    position: relative;
   }
   & .slider2 {
     background-image: url("slider 1.png");
-    layout: responsive;
-    height: auto;
 
-    positsion: relative;
+    height: auto;
+    position: relative;
   }
 
   .slider1 h1,
@@ -437,9 +437,9 @@ export const StyleElement = styled.div`
       width: 90%;
       margin: 20px;
     }
-    .batafsil-btn{
-    margin:10px;
-     width:90%
+    .batafsil-btn {
+      margin: 10px;
+      width: 90%;
     }
   }
   @media (max-width: 500px) {
@@ -471,7 +471,11 @@ export default function Home() {
   const [likee, setLikee] = useState([]);
   const { results } = useSelector((state) => state.like);
   const dispatch = useDispatch();
+  const setMainLoading = (l = false) => {
+    dispatch({ type: "SET_LOADING", payload: l });
+  };
   useEffect(() => {
+    setMainLoading(true);
     const data = new FormData();
     axios()
       .get("/category/?lan=uz")
@@ -479,6 +483,9 @@ export default function Home() {
         const data = response?.data;
         const categoryy = Array.isArray(data) ? data : [];
         setCategory(categoryy);
+      })
+      .finally(() => {
+        setMainLoading();
       });
 
     axios()
@@ -502,7 +509,10 @@ export default function Home() {
           });
         }
       })
-      .catch(() => console.log("err"));
+      .catch(() => console.log("err"))
+      .finally(() => {
+        setMainLoading();
+      });
   }, []);
 
   const Like = (id) => {
@@ -1131,7 +1141,7 @@ export default function Home() {
                           alignItems: "center",
                         }}
                       >
-                        {t('lokatsiya')}
+                        {t("lokatsiya")}
                       </span>
                     </div>
                   </div>
