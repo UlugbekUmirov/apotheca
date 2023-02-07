@@ -593,7 +593,9 @@ export default function Home() {
                     активному долголетию
                   </h1>
                   <Link href="/categories">
-                    <button className="batafsil-btn">{t("sliderbutton")}</button>
+                    <button className="batafsil-btn">
+                      {t("sliderbutton")}
+                    </button>
                   </Link>
                 </div>
               </SwiperSlide>
@@ -604,7 +606,9 @@ export default function Home() {
                     активному долголетию
                   </h1>
                   <Link href="/categories">
-                    <button className="batafsil-btn">{t("button")}</button>
+                    <button className="batafsil-btn">
+                      {t("sliderbutton")}
+                    </button>
                   </Link>
                 </div>
               </SwiperSlide>

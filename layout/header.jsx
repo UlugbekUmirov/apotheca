@@ -345,7 +345,6 @@ const Header = (props) => {
   const [basket, setBaksets] = useState([]);
   const [like, setLikes] = useState([]);
   const [category, setCategory] = useState([]);
-
   const [target, setTarget] = useState("");
   const [step3, setStep3] = useState(false);
   const [child, setChild] = useState(0);
@@ -461,7 +460,6 @@ const Header = (props) => {
 
   return (
     <div>
-      <span>{props.locale}</span>
       <Navbar style={{ position: "relative" }}>
         <div className={className2}>
           <nav className="container">
